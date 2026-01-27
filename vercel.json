@@ -1,5 +1,4 @@
 {
-    "basePath": "/launch-tracker",
     "headers": [
         {
             "source": "/(.*)",
@@ -21,7 +20,7 @@
     ],
     "rewrites": [
         {
-            "source": "/launch-tracker/(.*)",
+            "source": "/(.*)",
             "destination": "/index.html"
         }
     ]
