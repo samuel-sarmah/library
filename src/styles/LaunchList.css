@@ -6,12 +6,12 @@
 
 /* Container and Layout */
 .launch-list-container {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', sans-serif;
   width: 100%;
   max-width: 1000px;
   margin: 0 auto;
   padding: 24px 16px;
-  background-color: #000000;
+  background: linear-gradient(180deg, #000000 0%, #0d0d0d 100%);
 }
 
 /* Typography */
@@ -43,15 +43,24 @@
   cursor: pointer;
   overflow: hidden;
   box-sizing: border-box;
+  border-radius: 12px;
+  position: relative;
 }
 
 .launch-card:hover {
   background-color: #222222;
 }
 
+/* Card container overlay for text readability */
+.card-container {
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.9) 100%);
+  border-radius: 12px;
+  padding: 24px;
+}
+
 .launch-card-image {
   width: 100%;
-  height: 200px;
+  height: 320px;
   overflow: hidden;
   position: relative;
 }
@@ -66,24 +75,28 @@
 
 .countdown-overlay {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  top: 8px;
+  left: 8px;
   z-index: 10;
 }
 
-.countdown-overlay .countdown {
-  background: rgba(0, 0, 0, 0.85);
-  border: 1px solid rgba(77, 166, 255, 0.3);
+/* Countdown timer with glassmorphism */
+.countdown-overlay .countdown,
+.countdown-timer {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  padding: 6px 8px;
+  padding: 4px 6px;
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 .countdown-overlay .countdown-prefix {
-  color: #4da6ff;
-  font-size: 11px;
-  font-weight: 600;
-  margin-right: 4px;
+  color: #ff6b35;
+  font-size: 9px;
+  font-weight: 700;
+  margin-right: 2px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .countdown-overlay .countdown-segments {
@@ -96,40 +109,47 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 18px;
+  min-width: 14px;
 }
 
 .countdown-overlay .countdown-value {
   color: #ffffff;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   line-height: 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .countdown-overlay .countdown-label {
-  color: #888888;
-  font-size: 8px;
+  color: #a1a1a1;
+  font-size: 7px;
   font-weight: 400;
   text-transform: uppercase;
   margin-top: 1px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .countdown-overlay .countdown-separator {
-  color: #4da6ff;
-  font-size: 11px;
+  color: #ff6b35;
+  font-size: 9px;
   font-weight: 600;
   margin: 0 1px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-.countdown-overlay .countdown-launched {
-  background: rgba(0, 100, 0, 0.85);
+/* Timestamp badge */
+.countdown-overlay .countdown-launched,
+.timestamp-badge {
+  background-color: rgba(0, 150, 0, 0.2);
   border: 1px solid rgba(0, 200, 0, 0.3);
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 4px 6px;
   color: #ffffff;
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 600;
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .launch-card-content {
@@ -143,7 +163,9 @@
   min-width: 0;
 }
 
-.launch-card-name {
+/* Card title typography */
+.launch-card-name,
+.card-title {
   font-size: 22px;
   font-weight: 700;
   color: #ffffff;
@@ -165,43 +187,53 @@
   gap: 12px;
 }
 
-.launch-card-label {
-  color: #666666;
+/* Metadata text styling */
+.launch-card-label,
+.metadata-text {
+  color: #a1a1a1;
   font-weight: 500;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
 .launch-card-value {
-  color: #cccccc;
+  color: #a1a1a1;
+  font-size: 14px;
   text-align: right;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.launch-card-button {
+/* Watch button styling */
+.launch-card-button,
+.watch-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   margin-top: 12px;
   padding: 12px 20px;
-  background: #cc0000;
+  background-color: #7f1212;
   color: #ffffff;
   text-decoration: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.launch-card-button::before {
+.launch-card-button::before,
+.watch-button::before {
   content: "▶";
   font-size: 12px;
 }
 
-.launch-card-button:hover {
-  background: #ff0000;
+.launch-card-button:hover,
+.watch-button:hover {
+  background-color: #991515;
 }
 
 /* Pagination */
