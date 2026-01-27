@@ -1,15 +1,16 @@
 {
+    "basePath": "/launch-tracker",
     "headers": [
         {
             "source": "/(.*)",
             "headers": [
                 {
                     "key": "X-Frame-Options",
-                    "value": "ALLOWALL"
+                    "value": "SAMEORIGIN"
                 },
                 {
                     "key": "Content-Security-Policy",
-                    "value": "frame-ancestors *"
+                    "value": "frame-ancestors 'self'"
                 },
                 {
                     "key": "cache-control",
@@ -20,7 +21,7 @@
     ],
     "rewrites": [
         {
-            "source": "/(.*)",
+            "source": "/launch-tracker/(.*)",
             "destination": "/index.html"
         }
     ]
