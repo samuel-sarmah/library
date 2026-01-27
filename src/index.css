@@ -15,8 +15,13 @@ a:hover {
   color: #7fbfff;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
   padding: 0;
   background-color: #000000;
+  overflow-x: hidden;
 }
