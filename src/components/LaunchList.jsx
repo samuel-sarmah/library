@@ -89,7 +89,11 @@ function LaunchList() {
 
         const sorted = [...filtered].sort((a, b) => {
             if (sortOrder === 'date') {
-                return new Date(a.net) - new Date(b.net);
+                // For previous launches: sort descending (newest first)
+                // For upcoming launches: sort ascending (soonest first)
+                const dateA = new Date(a.net);
+                const dateB = new Date(b.net);
+                return launchType === 'previous' ? dateB - dateA : dateA - dateB;
             } else if (sortOrder === 'name') {
                 return a.name?.localeCompare(b.name) || 0;
             }
