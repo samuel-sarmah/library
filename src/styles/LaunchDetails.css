@@ -1,0 +1,288 @@
+.details-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+  background-color: #000000;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 12px 20px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid #333;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: #2a2a2a;
+}
+
+.details-error {
+  text-align: center;
+  padding: 60px 20px;
+  color: #888888;
+}
+
+.details-hero {
+  width: 100%;
+  margin-bottom: 32px;
+  overflow: hidden;
+}
+
+.details-hero-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+.details-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.details-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.details-countdown-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.details-info-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.details-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #333;
+}
+
+.details-info-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #888888;
+}
+
+.details-info-value {
+  font-size: 14px;
+  color: #ffffff;
+  text-align: right;
+}
+
+.details-status {
+  font-weight: 600;
+  padding: 4px 8px;
+  background-color: #2a2a2a;
+}
+
+.details-mission-text {
+  background-color: #1a1a1a;
+  padding: 24px;
+}
+
+.details-section-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+.details-mission-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #cccccc;
+  margin: 0;
+}
+
+/* Company Section */
+.details-company-section,
+.details-rocket-section,
+.details-booster-section {
+  background-color: #1a1a1a;
+  padding: 24px;
+}
+
+.details-company-description,
+.details-rocket-description {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #cccccc;
+  margin: 0 0 24px 0;
+}
+
+.details-company-stats,
+.details-rocket-specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.details-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #333;
+}
+
+.details-stat-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #888888;
+}
+
+.details-stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  text-align: right;
+}
+
+/* Booster Section */
+.details-booster-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 10px;
+}
+
+.details-booster-card {
+  background-color: #2a2a2a;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #333;
+}
+
+.details-booster-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 16px 0;
+}
+
+.details-booster-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Video Section */
+.details-video-wrapper {
+  background-color: #1a1a1a;
+  padding: 24px;
+}
+
+.details-video-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.details-video-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.details-video-button::before {
+  content: "▶";
+  font-size: 14px;
+}
+
+.details-video-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(255, 0, 0, 0.3);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .details-container {
+    padding: 16px;
+  }
+
+  .details-title {
+    font-size: 28px;
+  }
+
+  .details-hero-image {
+    height: 250px;
+  }
+
+  .details-company-stats,
+  .details-rocket-specs {
+    grid-template-columns: 1fr;
+  }
+
+  .details-booster-info {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .details-container {
+    padding: 12px;
+  }
+
+  .details-title {
+    font-size: 24px;
+  }
+
+  .details-hero-image {
+    height: 200px;
+  }
+
+  .details-section-title {
+    font-size: 20px;
+  }
+
+  .details-info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .details-info-value {
+    text-align: left;
+  }
+
+  .details-stat-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .details-stat-value {
+    text-align: left;
+  }
+
+  .details-company-section,
+  .details-rocket-section,
+  .details-booster-section,
+  .details-video-wrapper {
+    padding: 16px;
+  }
+}
