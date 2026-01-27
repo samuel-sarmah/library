@@ -43,29 +43,50 @@ function Countdown({ launchDate }) {
         return <div className="countdown-launched">Launched</div>;
     }
 
+    const segments = [];
+    
+    // Only include days if more than 0
+    if (timeLeft.days > 0) {
+        segments.push(
+            <div key="days" className="countdown-segment">
+                <span className="countdown-value">{String(timeLeft.days).padStart(2, '0')}</span>
+                <span className="countdown-label">Days</span>
+            </div>
+        );
+    }
+    
+    // Always include hours, minutes, seconds
+    segments.push(
+        <div key="hours" className="countdown-segment">
+            <span className="countdown-value">{String(timeLeft.hours).padStart(2, '0')}</span>
+            <span className="countdown-label">Hours</span>
+        </div>
+    );
+    
+    segments.push(
+        <div key="minutes" className="countdown-segment">
+            <span className="countdown-value">{String(timeLeft.minutes).padStart(2, '0')}</span>
+            <span className="countdown-label">Mins</span>
+        </div>
+    );
+    
+    segments.push(
+        <div key="seconds" className="countdown-segment">
+            <span className="countdown-value">{String(timeLeft.seconds).padStart(2, '0')}</span>
+            <span className="countdown-label">Secs</span>
+        </div>
+    );
+
     return (
         <div className="countdown">
             <div className="countdown-prefix">T-</div>
             <div className="countdown-segments">
-                <div className="countdown-segment">
-                    <span className="countdown-value">{String(timeLeft.days).padStart(2, '0')}</span>
-                    <span className="countdown-label">Days</span>
-                </div>
-                <div className="countdown-separator">:</div>
-                <div className="countdown-segment">
-                    <span className="countdown-value">{String(timeLeft.hours).padStart(2, '0')}</span>
-                    <span className="countdown-label">Hours</span>
-                </div>
-                <div className="countdown-separator">:</div>
-                <div className="countdown-segment">
-                    <span className="countdown-value">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                    <span className="countdown-label">Mins</span>
-                </div>
-                <div className="countdown-separator">:</div>
-                <div className="countdown-segment">
-                    <span className="countdown-value">{String(timeLeft.seconds).padStart(2, '0')}</span>
-                    <span className="countdown-label">Secs</span>
-                </div>
+                {segments.map((segment, index) => (
+                    <React.Fragment key={index}>
+                        {segment}
+                        {index < segments.length - 1 && <div className="countdown-separator">:</div>}
+                    </React.Fragment>
+                ))}
             </div>
         </div>
     );
