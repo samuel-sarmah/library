@@ -8,7 +8,6 @@ function Header() {
             top: 0,
             zIndex: 100,
             width: '100%',
-            overflow: 'hidden',
         },
         container: {
             maxWidth: '1000px',
