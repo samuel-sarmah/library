@@ -11,10 +11,11 @@ function LaunchCard({ launch }) {
     const isLaunchWithinCurrentDay = () => {
         const launchDate = new Date(launch.net);
         const now = new Date();
-        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const timeDiff = launchDate - now;
+        const hoursDiff = timeDiff / (1000 * 60 * 60);
         
-        return launchDate >= startOfDay && launchDate < endOfDay;
+        // Show overlay for launches within 24 hours
+        return hoursDiff <= 24 && hoursDiff > 0;
     };
 
     const showOverlayTimer = isLaunchWithinCurrentDay();
