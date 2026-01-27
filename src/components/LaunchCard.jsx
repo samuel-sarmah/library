@@ -15,6 +15,9 @@ function LaunchCard({ launch }) {
                     src={launch.image || 'https://via.placeholder.com/400x250?text=No+Image'}
                     alt={launch.name}
                 />
+                <div className="countdown-overlay">
+                    <Countdown launchDate={launch.net} />
+                </div>
             </div>
             <div className="launch-card-content">
                 <h2 className="launch-card-name">{launch.name}</h2>
@@ -29,7 +32,6 @@ function LaunchCard({ launch }) {
                             {launch.pad?.location?.name || 'TBD'}
                         </span>
                     </div>
-                    <Countdown launchDate={launch.net} />
                     <div className="launch-card-row">
                         <span className="launch-card-value">
                             {new Date(launch.net).toLocaleDateString('en-us', {
