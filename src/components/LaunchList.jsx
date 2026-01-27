@@ -7,6 +7,7 @@ import '../styles/LaunchList.css';
 function LaunchList() {
     const [launches, setLaunches] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [hasLoaded, setHasLoaded] = useState(false);
     const [filters, setFilters] = useState({
         provider: '',
         rocket: '',
@@ -41,11 +42,13 @@ function LaunchList() {
                 }
                 
                 setLaunches(data.results);
+                setHasLoaded(true);
             } catch (err) {
                 if (err.name !== 'AbortError') {
                     console.error('API Error:', err);
                     alert(`Sorry, ${err.message}. You may have hit the API rate limit - please wait and try again.`);
                 }
+                setHasLoaded(true);
             } finally {
                 setLoading(false);
             }
@@ -154,9 +157,15 @@ function LaunchList() {
                     onLaunchTypeChange={handleLaunchTypeChange}
                 />
 
-                {paginatedLaunches.length === 0 && !loading && (
+                {paginatedLaunches.length === 0 && !loading && hasLoaded && launches.length > 0 && (
                     <div className="no-results">
                         <p>No launches found matching your filters.</p>
+                    </div>
+                )}
+                
+                {!loading && hasLoaded && launches.length === 0 && (
+                    <div className="no-results">
+                        <p>Unable to load launches. Please check your connection and try again.</p>
                     </div>
                 )}
 
