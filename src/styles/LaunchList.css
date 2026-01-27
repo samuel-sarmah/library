@@ -80,15 +80,13 @@
   z-index: 10;
 }
 
-/* Countdown timer with glassmorphism */
+/* Countdown timer - lightweight styling */
 .countdown-overlay .countdown,
 .countdown-timer {
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 166, 0, 0.3);
+  border-radius: 4px;
   padding: 4px 6px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 
 .countdown-overlay .countdown-prefix {
@@ -96,7 +94,6 @@
   font-size: 9px;
   font-weight: 700;
   margin-right: 2px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .countdown-overlay .countdown-segments {
@@ -117,7 +114,6 @@
   font-size: 10px;
   font-weight: 700;
   line-height: 1;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .countdown-overlay .countdown-label {
@@ -126,7 +122,6 @@
   font-weight: 400;
   text-transform: uppercase;
   margin-top: 1px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .countdown-overlay .countdown-separator {
@@ -134,22 +129,18 @@
   font-size: 9px;
   font-weight: 600;
   margin: 0 1px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 /* Timestamp badge */
 .countdown-overlay .countdown-launched,
 .timestamp-badge {
-  background-color: rgba(0, 150, 0, 0.2);
+  background-color: rgba(0, 100, 0, 0.7);
   border: 1px solid rgba(0, 200, 0, 0.3);
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 4px 6px;
   color: #ffffff;
   font-size: 9px;
   font-weight: 600;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 .launch-card-content {
@@ -282,24 +273,23 @@
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #333333;
-  border-top: 4px solid #4da6ff;
+  width: 32px;
+  height: 32px;
+  border: 3px solid #333333;
+  border-top: 3px solid #4da6ff;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 1.5s linear infinite;
+  will-change: transform;
 }
 
 .loading-text {
-  margin-top: 20px;
-  font-size: 17px;
+  margin-top: 16px;
+  font-size: 16px;
   color: #aaaaaa;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
 }
 
 /* No Results State */
