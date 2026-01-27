@@ -18,31 +18,44 @@ function LaunchList() {
     const [launchType, setLaunchType] = useState('upcoming');
 
     useEffect(() => {
-        setLoading(true);
-        const endpoint = launchType === 'upcoming' 
-            ? 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=100'
-            : 'https://ll.thespacedevs.com/2.2.0/launch/previous/?limit=100';
+        const controller = new AbortController();
         
-        fetch(endpoint)
-            .then(response => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const endpoint = launchType === 'upcoming' 
+                    ? 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=100'
+                    : 'https://ll.thespacedevs.com/2.2.0/launch/previous/?limit=100';
+                
+                const response = await fetch(endpoint, { signal: controller.signal });
+                
                 if (!response.ok) {
                     throw new Error(`API error: ${response.status}`);
                 }
-                return response.json();
-            })
-            .then(data => {
+                
+                const data = await response.json();
+                
                 // Check if data has expected properties (not a rate limit error)
                 if (data.detail || !data.results) {
                     throw new Error(data.detail || 'Invalid response from API');
                 }
+                
                 setLaunches(data.results);
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    console.error('API Error:', err);
+                    alert(`Sorry, ${err.message}. You may have hit the API rate limit - please wait and try again.`);
+                }
+            } finally {
                 setLoading(false);
-            })
-            .catch(err => {
-                console.error('API Error:', err);
-                alert(`Sorry, ${err.message}. You may have hit the API rate limit - please wait and try again.`);
-                setLoading(false);
-            });
+            }
+        };
+        
+        fetchData();
+        
+        return () => {
+            controller.abort();
+        };
     }, [launchType]);
 
     const filterOptions = useMemo(() => {
@@ -89,12 +102,7 @@ function LaunchList() {
         currentPage * resultsPerPage
     );
 
-    const featuredMission = useMemo(() => {
-        return launches.find(launch => 
-            launch.name?.toLowerCase().includes('artemis ii') || 
-            launch.name?.toLowerCase().includes('artemis 2')
-        );
-    }, [launches]);
+
 
     const handleFilterChange = (filterType, value) => {
         setFilters(prev => ({ ...prev, [filterType]: value }));
