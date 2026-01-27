@@ -119,13 +119,16 @@ function LaunchList() {
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
-        window.scrollTo(0, 0);
+        // Smooth scroll to top for better UX
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleLaunchTypeChange = (type) => {
-        setLaunchType(type);
-        setCurrentPage(1);
-        setFilters({ provider: '', rocket: '', location: '' });
+        if (type !== launchType) {
+            setLaunchType(type);
+            setCurrentPage(1);
+            setFilters({ provider: '', rocket: '', location: '' });
+        }
     };
 
     if (loading) {
@@ -157,15 +160,9 @@ function LaunchList() {
                     onLaunchTypeChange={handleLaunchTypeChange}
                 />
 
-                {paginatedLaunches.length === 0 && !loading && hasLoaded && launches.length > 0 && (
+                {!loading && paginatedLaunches.length === 0 && launches.length > 0 && (
                     <div className="no-results">
                         <p>No launches found matching your filters.</p>
-                    </div>
-                )}
-                
-                {!loading && hasLoaded && launches.length === 0 && (
-                    <div className="no-results">
-                        <p>Unable to load launches. Please check your connection and try again.</p>
                     </div>
                 )}
 
