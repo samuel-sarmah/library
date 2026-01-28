@@ -90,7 +90,7 @@ function LaunchCard({ launch }) {
                     <span>{launchLocation}</span>
                 </div>
                 
-                {videoUrls && videoUrls.length > 0 && (
+                {videoUrls && videoUrls.length > 0 && videoUrls[0] && videoUrls[0].url && (
                     <a
                         href={videoUrls[0].url}
                         target="_blank"
