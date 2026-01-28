@@ -3,22 +3,35 @@ import './SearchBar.css';
 
 function SearchBar({ filters, onFilterChange, sortOrder, onSortChange, filterOptions, resultsPerPage, onResultsPerPageChange, launchType, onLaunchTypeChange }) {
     const [filtersVisible, setFiltersVisible] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     return (
         <div className="filter-wrapper">
-            <div className="launch-type-toggle">
-                <button
-                    className={`launch-type-btn ${launchType === 'upcoming' ? 'active' : ''}`}
-                    onClick={() => onLaunchTypeChange('upcoming')}
-                >
-                    Upcoming
-                </button>
-                <button
-                    className={`launch-type-btn ${launchType === 'previous' ? 'active' : ''}`}
-                    onClick={() => onLaunchTypeChange('previous')}
-                >
-                    Previous
-                </button>
+            <div className="search-filter-row">
+                <div className="launch-type-toggle">
+                    <button
+                        className={`launch-type-btn ${launchType === 'upcoming' ? 'active' : ''}`}
+                        onClick={() => onLaunchTypeChange('upcoming')}
+                    >
+                        Upcoming
+                    </button>
+                    <button
+                        className={`launch-type-btn ${launchType === 'previous' ? 'active' : ''}`}
+                        onClick={() => onLaunchTypeChange('previous')}
+                    >
+                        Previous
+                    </button>
+                </div>
+                
+                <div className="search-input-wrapper">
+                    <input
+                        type="text"
+                        placeholder="Search launches..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="search-input"
+                    />
+                </div>
             </div>
 
             <button
