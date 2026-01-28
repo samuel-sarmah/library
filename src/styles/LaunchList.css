@@ -34,8 +34,8 @@
 
 /* Launch Card - Vertical Layout */
 .launch-card {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr 2fr;
   background-color: #1a1a1a;
   width: 100%;
   max-width: 100%;
@@ -43,7 +43,7 @@
   cursor: pointer;
   overflow: hidden;
   box-sizing: border-box;
-  border-radius: 12px;
+  border-radius: 6px;
   position: relative;
 }
 
@@ -60,7 +60,7 @@
 
 .launch-card-image {
   width: 100%;
-  height: 320px;
+  height: 75%;
   overflow: hidden;
   position: relative;
 }
