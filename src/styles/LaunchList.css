@@ -41,7 +41,7 @@
   background-color: #0a0a0a;
   border-radius: 12px;
   border: 1px solid #1a1a1a;
-  height: 378px;
+  height: 420px;
 }
 
 
@@ -49,7 +49,7 @@
 /* Image section - 75% of card height */
 .launch-card-image {
   width: 100%;
-  height: 283px; /* 75% of 378px */
+  height: 75%;
   overflow: hidden;
   position: relative;
   flex-shrink: 0;
@@ -189,14 +189,14 @@
   align-items: flex-start;
   min-width: 0;
   flex-shrink: 0;
-  gap: 4px;
+  gap: 8px;
 }
 
 /* Rocket | Provider row */
 .launch-card-meta-row {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   width: 100%;
   overflow: hidden;
 }
@@ -229,7 +229,7 @@
 .launch-card-location {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   color: #a1a1a1;
   font-size: 12px;
   font-weight: 400;
