@@ -41,8 +41,23 @@ function LaunchList() {
                     throw new Error(data.detail || 'Invalid response from API');
                 }
                 
-                setLaunches(data.results);
-                setHasLoaded(true);
+                // Categorize launches: move completed launches (12+ hours after) to "previous" category
+        const now = new Date();
+        const processedLaunches = data.results.filter(launch => {
+            const launchTime = new Date(launch.net);
+            const hoursSinceLaunch = (now - launchTime) / (1000 * 60 * 60);
+            
+            if (launchType === 'upcoming') {
+                // Only show launches that haven't happened or are within 12 hours
+                return hoursSinceLaunch < 12;
+            } else {
+                // For previous launches, only show launches that happened 12+ hours ago
+                return hoursSinceLaunch >= 12;
+            }
+        });
+
+        setLaunches(processedLaunches);
+        setHasLoaded(true);
             } catch (err) {
                 if (err.name !== 'AbortError') {
                     console.error('API Error:', err);

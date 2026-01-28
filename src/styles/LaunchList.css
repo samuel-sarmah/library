@@ -22,7 +22,6 @@
   letter-spacing: -0.3px;
 }
 
-/* Launch List Layout - 3 Column Grid */
 .launch-list {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -30,7 +29,6 @@
   width: 100%;
 }
 
-/* Launch Card - Vertical Layout */
 .launch-card {
   display: flex;
   flex-direction: column;
@@ -41,9 +39,9 @@
   overflow: hidden;
   box-sizing: border-box;
   background-color: #0a0a0a;
-  border-radius: 12px;
+  border-radius: 6px;
   border: 1px solid #1a1a1a;
-  height: 420px;
+  height: 300px;
 }
 
 
@@ -146,7 +144,6 @@
   letter-spacing: 0.5px;
 }
 
-/* Image info overlay - Bottom Left (Date + Payload) */
 .launch-card-image-info {
   position: absolute;
   bottom: 16px;
@@ -158,7 +155,6 @@
   gap: 6px;
 }
 
-/* Launch date badge - consistent with countdown styling */
 .launch-card-date {
   display: inline-flex;
   align-self: flex-start;
@@ -172,7 +168,6 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* Payload name - larger and bolder */
 .launch-card-payload {
   color: #ffffff;
   font-size: 20px;
@@ -186,24 +181,22 @@
   overflow: hidden;
 }
 
-/* Content section - 25% of card height */
 .launch-card-content {
   height: 25%;
-  padding: 14px 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   min-width: 0;
   flex-shrink: 0;
-  gap: 8px;
+  gap: 5px;
 }
 
 /* Rocket | Provider row */
 .launch-card-meta-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   width: 100%;
   overflow: hidden;
 }
@@ -233,7 +226,6 @@
   text-overflow: ellipsis;
 }
 
-/* Location row */
 .launch-card-location {
   display: flex;
   align-items: center;
@@ -243,6 +235,7 @@
   font-weight: 400;
   width: 100%;
   overflow: hidden;
+  margin-top: 2px;
 }
 
 .launch-card-location span {
