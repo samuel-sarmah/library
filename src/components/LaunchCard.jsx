@@ -42,9 +42,16 @@ function LaunchCard({ launch }) {
         minute: '2-digit'
     });
 
-    // Get video URLs
-    const videoUrls = launch.vid_urls || launch.vidURLs || launch.mission?.vid_urls || [];
-    const hasVideo = videoUrls.length > 0;
+    // Get video URLs - match LaunchDetails pattern
+    const videoUrls = (launch.vid_urls || launch.vidURLs) && Array.isArray(launch.vid_urls || launch.vidURLs) && (launch.vid_urls?.length > 0 || launch.vidURLs?.length > 0);
+    
+    // Debug: Log video URL data
+    console.log('LaunchCard video URLs:', {
+        vid_urls: launch.vid_urls,
+        vidURLs: launch.vidURLs,
+        hasVideo: !!videoUrls,
+        videoUrl: videoUrls[0]?.url
+    });
 
     return (
         <div className="launch-card" onClick={handleCardClick}>
@@ -83,7 +90,7 @@ function LaunchCard({ launch }) {
                     <span>{launchLocation}</span>
                 </div>
                 
-                {hasVideo && (
+                {videoUrls && videoUrls.length > 0 && (
                     <a
                         href={videoUrls[0].url}
                         target="_blank"
