@@ -7,7 +7,7 @@
     flex-wrap: wrap;
     max-width: 100%;
     background-color: rgba(0, 0, 0, 0.7);
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 8px 12px;
 }
 
@@ -53,14 +53,6 @@
     margin-top: 4px;
 }
 
-.countdown-separator {
-    font-size: 16px;
-    font-weight: 700;
-    color: #666666;
-    font-family: 'Inter', sans-serif;
-    line-height: 1;
-    padding-top: 5px;
-}
 
 /* Timestamp badge / launched state */
 .countdown-launched {

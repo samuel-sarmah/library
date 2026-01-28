@@ -90,12 +90,10 @@
 
 .filter-select:hover {
   border-color: #666;
-  background-color: #1f1f1f;
 }
 
 .filter-select:focus {
   border-color: #4da6ff;
-  background-color: #1f1f1f;
 }
 
 /* Large Tablet / Small Desktop (Nest Hub 1024px) */

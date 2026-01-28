@@ -215,7 +215,6 @@
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 1px;
-  transition: transform 0.15s ease;
 }
 
 .details-video-button::before {
@@ -225,7 +224,6 @@
 
 .details-video-button:hover {
   background-color: #991515;
-  transform: translateY(-1px);
 }
 
 /* Responsive Design */
