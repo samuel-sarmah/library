@@ -42,16 +42,8 @@ function LaunchCard({ launch }) {
         minute: '2-digit'
     });
 
-    // Get video URLs - match LaunchDetails pattern
-    const videoUrls = (launch.vid_urls || launch.vidURLs) && Array.isArray(launch.vid_urls || launch.vidURLs) && (launch.vid_urls?.length > 0 || launch.vidURLs?.length > 0);
-    
-    // Debug: Log video URL data
-    console.log('LaunchCard video URLs:', {
-        vid_urls: launch.vid_urls,
-        vidURLs: launch.vidURLs,
-        hasVideo: !!videoUrls,
-        videoUrl: videoUrls[0]?.url
-    });
+    // Get video URLs
+    const videoUrls = launch.vid_urls || launch.vidURLs || launch.mission?.vid_urls || [];
 
     return (
         <div className="launch-card" onClick={handleCardClick}>
@@ -90,17 +82,26 @@ function LaunchCard({ launch }) {
                     <span>{launchLocation}</span>
                 </div>
                 
-                {videoUrls && videoUrls.length > 0 && videoUrls[0] && videoUrls[0].url && (
-                    <a
-                        href={videoUrls[0].url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="launch-card-button"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        Watch Live
-                    </a>
-                )}
+                {(() => {
+                    const videoUrls = launch.vid_urls || launch.vidURLs || launch.mission?.vid_urls || [];
+                    
+                    // Filter for official streams or use highest priority video
+                    const primaryVideo = videoUrls.length > 0 
+                        ? videoUrls.find(video => video.type?.name?.includes('Official')) || videoUrls[0]
+                        : null;
+                        
+                    return primaryVideo && primaryVideo.url ? (
+                        <a
+                            href={primaryVideo.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="launch-card-button"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {primaryVideo.type?.name?.includes('Live') ? 'Watch Live' : 'Watch Video'}
+                        </a>
+                    ) : null;
+                })()}
             </div>
         </div>
     );
