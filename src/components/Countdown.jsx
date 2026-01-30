@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import '../styles/Countdown.css';
 
@@ -59,7 +60,7 @@ function Countdown({ launchDate }) {
     segments.push(
         <div key="hours" className="countdown-segment">
             <span className="countdown-value">{String(timeLeft.hours).padStart(2, '0')}</span>
-            <span className="countdown-label">Hours</span>
+            <span className="countdown-label">Hrs</span>
         </div>
     );
     
@@ -79,12 +80,10 @@ function Countdown({ launchDate }) {
 
     return (
         <div className="countdown">
-            <div className="countdown-prefix">T-</div>
             <div className="countdown-segments">
                 {segments.map((segment, index) => (
                     <React.Fragment key={index}>
                         {segment}
-                        {index < segments.length - 1 && <div className="countdown-separator">:</div>}
                     </React.Fragment>
                 ))}
             </div>

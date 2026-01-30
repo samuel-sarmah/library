@@ -70,9 +70,10 @@
   align-items: center;
   gap: 6px;
   padding: 6px 12px;
-  background-color: #2a2a2a;
+  background-color: #000000;
   border-radius: 8px;
-  border: 1px solid #555;
+  border: 1px solid #333;
+  color: #ffffff;
   font-size: 10px;
   font-weight: 600;
   text-align: center;
@@ -100,11 +101,11 @@
 .filter-select {
   width: 100%;
   padding: 10px 32px 10px 12px;
-  border: 1px solid #444;
+  border: 1px solid #333;
   border-radius: 8px;
   font-size: 13px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: #1a1a1a;
+  font-family: 'Inter', sans-serif;
+  background-color: #000000;
   color: #ffffff;
   outline: none;
   cursor: pointer;
@@ -125,11 +126,16 @@
 }
 
 .filter-select:hover {
-  border-color: #666;
+  border-color: #555;
 }
 
 .filter-select:focus {
   border-color: #4da6ff;
+}
+
+.filter-select option {
+  background-color: #000000;
+  color: #ffffff;
 }
 
 /* Large Tablet / Small Desktop (Nest Hub 1024px) */

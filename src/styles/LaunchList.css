@@ -39,17 +39,17 @@
   overflow: hidden;
   box-sizing: border-box;
   background-color: #0a0a0a;
-  border-radius: 12px;
+  border-radius: 6px;
   border: 1px solid #1a1a1a;
-  height: 420px;
+  height: 260px;
 }
 
 
 
-/* Image section - 75% of card height */
+/* Image section */
 .launch-card-image {
   width: 100%;
-  height: 75%;
+  height: 80%;
   overflow: hidden;
   position: relative;
   flex-shrink: 0;
@@ -77,33 +77,23 @@
 .countdown-timer {
   display: flex;
   align-items: center;
-  gap: 2px;
-  background-color: rgba(0, 0, 0, 0.75);
-  border-radius: 6px;
-  padding: 6px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.countdown-overlay .countdown-prefix {
-  color: #ff6b35;
-  font-size: 10px;
-  font-weight: 700;
-  margin-right: 4px;
-  text-transform: uppercase;
+  gap: 3px;
 }
 
 .countdown-overlay .countdown-segments {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
 }
 
 .countdown-overlay .countdown-segment {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 24px;
-  padding: 2px 4px;
+  min-width: 28px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
 }
 
 .countdown-overlay .countdown-value {
@@ -116,18 +106,10 @@
 
 .countdown-overlay .countdown-label {
   color: #a1a1a1;
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 500;
   text-transform: uppercase;
-  margin-top: 2px;
-  letter-spacing: 0.5px;
-}
-
-.countdown-overlay .countdown-separator {
-  color: #ff6b35;
-  font-size: 12px;
-  font-weight: 600;
-  margin: 0 1px;
+  letter-spacing: 0.3px;
 }
 
 /* Timestamp badge */
@@ -182,14 +164,13 @@
 }
 
 .launch-card-content {
-  height: 25%;
+  flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: flex-start;
   min-width: 0;
-  flex-shrink: 0;
-  gap: 8px;
+  padding: 10px 12px;
 }
 
 /* Rocket | Provider row */
@@ -235,6 +216,7 @@
   font-weight: 400;
   width: 100%;
   overflow: hidden;
+  margin-bottom: 6px;
 }
 
 .launch-card-location span {
@@ -281,17 +263,17 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 14px;
+  padding: 6px 12px;
   background-color: #7f1212;
   color: #ffffff;
   text-decoration: none;
-  border-radius: 6px;
-  font-size: 11px;
+  border-radius: 4px;
+  font-size: 10px;
   font-weight: 600;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  align-self: flex-start;
+  margin-top: auto;
 }
 
 .launch-card-button::before,
@@ -384,10 +366,6 @@
     gap: 20px;
   }
 
-  .launch-card {
-    height: 380px;
-  }
-
   .launch-card-payload {
     font-size: 18px;
   }
@@ -403,14 +381,6 @@
   .launch-list {
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
-  }
-
-  .launch-card {
-    height: 360px;
-  }
-
-  .launch-card-content {
-    padding: 12px 14px;
   }
 
   .launch-card-payload {
@@ -439,22 +409,12 @@
     gap: 16px;
   }
 
-  .launch-card {
-    height: 340px;
-  }
-
-  .launch-card-content {
-    padding: 10px 12px;
-    gap: 6px;
-  }
-
   .launch-card-payload {
     font-size: 16px;
   }
 
   .launch-card-date {
     font-size: 11px;
-    padding: 5px 8px;
   }
 
   .countdown-overlay .countdown-value {
@@ -462,7 +422,7 @@
   }
 
   .countdown-overlay .countdown-label {
-    font-size: 7px;
+    font-size: 6px;
   }
 }
 
@@ -483,23 +443,14 @@
     gap: 12px;
   }
 
-  .launch-card {
-    height: 320px;
-  }
-
-  .launch-card-content {
-    padding: 10px 12px;
-    gap: 4px;
-  }
-
   .launch-card-payload {
     font-size: 15px;
   }
 
   .launch-card-image-info {
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
     gap: 4px;
   }
 }
@@ -519,15 +470,6 @@
   .launch-list {
     grid-template-columns: 1fr;
     gap: 16px;
-  }
-
-  .launch-card {
-    height: 400px;
-  }
-
-  .launch-card-content {
-    padding: 14px 16px;
-    gap: 8px;
   }
 
   .launch-card-payload {
@@ -582,14 +524,6 @@
     margin-bottom: 12px;
   }
 
-  .launch-card {
-    height: 380px;
-  }
-
-  .launch-card-content {
-    padding: 12px;
-  }
-
   .launch-card-payload {
     font-size: 16px;
   }
@@ -604,8 +538,8 @@
   }
 
   .launch-card-button {
-    padding: 8px 12px;
-    font-size: 10px;
+    padding: 6px 10px;
+    font-size: 9px;
   }
 
   .pagination-btn {
