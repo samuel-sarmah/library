@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useEffect } from 'react';
-import './App.css'
 import LaunchList from './components/LaunchList'
 import LaunchDetails from './components/LaunchDetails'
 
