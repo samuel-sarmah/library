@@ -2,12 +2,10 @@ import { useState, useEffect, useMemo } from "react";
 import Header from './Header';
 import SearchBar from './SearchBar';
 import LaunchCard from './LaunchCard';
-import '../styles/LaunchList.css';
 
 function LaunchList() {
     const [launches, setLaunches] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [hasLoaded, setHasLoaded] = useState(false);
     const [filters, setFilters] = useState({
         provider: '',
         rocket: '',
@@ -36,34 +34,28 @@ function LaunchList() {
                 
                 const data = await response.json();
                 
-                // Check if data has expected properties (not a rate limit error)
                 if (data.detail || !data.results) {
                     throw new Error(data.detail || 'Invalid response from API');
                 }
                 
-                // Categorize launches: move completed launches (12+ hours after) to "previous" category
-        const now = new Date();
-        const processedLaunches = data.results.filter(launch => {
-            const launchTime = new Date(launch.net);
-            const hoursSinceLaunch = (now - launchTime) / (1000 * 60 * 60);
-            
-            if (launchType === 'upcoming') {
-                // Only show launches that haven't happened or are within 12 hours
-                return hoursSinceLaunch < 12;
-            } else {
-                // For previous launches, only show launches that happened 12+ hours ago
-                return hoursSinceLaunch >= 12;
-            }
-        });
+                const now = new Date();
+                const processedLaunches = data.results.filter(launch => {
+                    const launchTime = new Date(launch.net);
+                    const hoursSinceLaunch = (now - launchTime) / (1000 * 60 * 60);
+                    
+                    if (launchType === 'upcoming') {
+                        return hoursSinceLaunch < 12;
+                    } else {
+                        return hoursSinceLaunch >= 12;
+                    }
+                });
 
-        setLaunches(processedLaunches);
-        setHasLoaded(true);
+                setLaunches(processedLaunches);
             } catch (err) {
                 if (err.name !== 'AbortError') {
                     console.error('API Error:', err);
                     alert(`Sorry, ${err.message}. You may have hit the API rate limit - please wait and try again.`);
                 }
-                setHasLoaded(true);
             } finally {
                 setLoading(false);
             }
@@ -104,8 +96,6 @@ function LaunchList() {
 
         const sorted = [...filtered].sort((a, b) => {
             if (sortOrder === 'date') {
-                // For previous launches: sort descending (newest first)
-                // For upcoming launches: sort ascending (soonest first)
                 const dateA = new Date(a.net);
                 const dateB = new Date(b.net);
                 return launchType === 'previous' ? dateB - dateA : dateA - dateB;
@@ -116,15 +106,13 @@ function LaunchList() {
         });
 
         return sorted;
-    }, [launches, filters, sortOrder]);
+    }, [launches, filters, sortOrder, launchType]);
 
     const totalPages = Math.ceil(filteredAndSortedLaunches.length / resultsPerPage);
     const paginatedLaunches = filteredAndSortedLaunches.slice(
         (currentPage - 1) * resultsPerPage,
         currentPage * resultsPerPage
     );
-
-
 
     const handleFilterChange = (filterType, value) => {
         setFilters(prev => ({ ...prev, [filterType]: value }));
@@ -138,7 +126,6 @@ function LaunchList() {
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
-        // Smooth scroll to top for better UX
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -152,9 +139,9 @@ function LaunchList() {
 
     if (loading) {
         return (
-            <div className="loading-container">
-                <div className="spinner"></div>
-                <p className="loading-text">Loading launches....</p>
+            <div className="flex flex-col items-center justify-center min-h-screen bg-black">
+                <div className="w-12 h-12 border-4 border-[#333] border-t-[#7f1212] rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-400">Loading launches....</p>
             </div>
         );
     }
@@ -162,8 +149,8 @@ function LaunchList() {
     return (
         <>
             <Header />
-            <div className="launch-list-container">
-                <h1 className="launch-title">
+            <div className="min-h-screen bg-black px-6 py-8">
+                <h1 className="text-2xl md:text-3xl font-bold text-white text-center mb-6 px-6">
                     {launchType === 'upcoming' ? 'Upcoming Space Launches' : 'Previous Space Launches'}
                 </h1>
 
@@ -180,31 +167,31 @@ function LaunchList() {
                 />
 
                 {!loading && paginatedLaunches.length === 0 && launches.length > 0 && (
-                    <div className="no-results">
+                    <div className="text-center py-12 text-gray-400">
                         <p>No launches found matching your filters.</p>
                     </div>
                 )}
 
-                <div className="launch-list">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-0">
                     {paginatedLaunches.map(launch => (
                         <LaunchCard key={launch.id} launch={launch} />
                     ))}
                 </div>
 
                 {totalPages > 1 && (
-                    <div className="pagination">
+                    <div className="flex items-center justify-center gap-4 mt-8">
                         <button
-                            className="pagination-btn"
+                            className="px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#222] transition-colors"
                             onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                             disabled={currentPage === 1}
                         >
                             Previous
                         </button>
-                        <span className="pagination-info">
+                        <span className="text-gray-400">
                             Page {currentPage} of {totalPages}
                         </span>
                         <button
-                            className="pagination-btn"
+                            className="px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#222] transition-colors"
                             onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                             disabled={currentPage === totalPages}
                         >
