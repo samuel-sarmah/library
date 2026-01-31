@@ -1,49 +1,11 @@
 function Header() {
-    const styles = {
-        header: {
-            backgroundColor: '#0a0a0a',
-            borderBottom: '1px solid #222',
-            padding: '16px 24px',
-            position: 'sticky',
-            top: 0,
-            zIndex: 100,
-            width: '100%',
-        },
-        container: {
-            maxWidth: '1000px',
-            margin: '0 auto',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: '100%',
-        },
-        logo: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-        },
-        logoIcon: {
-            fontSize: '24px',
-        },
-        logoText: {
-            fontSize: '18px',
-            fontWeight: '600',
-            color: '#ffffff',
-            letterSpacing: '0.5px',
-        },
-        tagline: {
-            fontSize: '13px',
-            color: '#888888',
-        },
-    };
-
     return (
-        <header style={styles.header}>
-            <div style={styles.container}>
-                <div style={styles.logo}>
-                    <span style={styles.logoText}>Mission Status</span>
+        <header className="bg-[#0a0a0a] border-b border-[#222] px-6 py-4 sticky top-0 z-50 w-full">
+            <div className="max-w-7xl mx-auto flex items-center justify-between w-full">
+                <div className="flex items-center gap-2.5">
+                    <span className="text-lg font-semibold text-white tracking-wide">Mission Status</span>
                 </div>
-                <span style={styles.tagline}>Launch Tracker</span>
+                <span className="text-[13px] text-gray-500">Launch Tracker</span>
             </div>
         </header>
     );
