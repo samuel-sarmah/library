@@ -1,8 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import '../styles/Countdown.css';
 
-function Countdown({ launchDate }) {
+function Countdown({ launchDate, prominent = false, showTPrefix = false }) {
     const [timeLeft, setTimeLeft] = useState({
         days: 0,
         hours: 0,
@@ -40,53 +39,72 @@ function Countdown({ launchDate }) {
         };
     }, [launchDate]);
 
+    // Prominent display variant
+    if (prominent) {
+        const prefix = timeLeft.launched ? 'T+' : 'T-';
+        const timeString = [
+            timeLeft.days > 0 ? String(timeLeft.days).padStart(2, '0') : null,
+            String(timeLeft.hours).padStart(2, '0'),
+            String(timeLeft.minutes).padStart(2, '0'),
+            String(timeLeft.seconds).padStart(2, '0')
+        ].filter(Boolean).join(':');
+
+        return (
+            <div className="flex justify-center items-center gap-1 text-xl font-mono">
+                {showTPrefix && <span className="text-cyan-400 font-bold">{prefix}</span>}
+                <span className="text-white">{timeString}</span>
+            </div>
+        );
+    }
+
     if (timeLeft.launched) {
-        return <div className="countdown-launched">Launched</div>;
+        return (
+            <div className="text-sm font-bold text-green-400 px-4 py-1">
+                ✓ Launched
+            </div>
+        );
     }
 
     const segments = [];
     
-    // Only include days if more than 0
     if (timeLeft.days > 0) {
         segments.push(
-            <div key="days" className="countdown-segment">
-                <span className="countdown-value">{String(timeLeft.days).padStart(2, '0')}</span>
-                <span className="countdown-label">Days</span>
+            <div key="days" className="flex flex-col items-center px-2">
+                <span className="text-2xl font-extrabold text-white leading-none font-mono">{String(timeLeft.days).padStart(2, '0')}</span>
+                <span className="text-[10px] text-white/60 uppercase tracking-wider mt-0.5">Days</span>
             </div>
         );
     }
     
-    // Always include hours, minutes, seconds
     segments.push(
-        <div key="hours" className="countdown-segment">
-            <span className="countdown-value">{String(timeLeft.hours).padStart(2, '0')}</span>
-            <span className="countdown-label">Hrs</span>
+        <div key="hours" className="flex flex-col items-center px-2">
+            <span className="text-2xl font-extrabold text-white leading-none font-mono">{String(timeLeft.hours).padStart(2, '0')}</span>
+            <span className="text-[10px] text-white/60 uppercase tracking-wider mt-0.5">Hrs</span>
         </div>
     );
     
     segments.push(
-        <div key="minutes" className="countdown-segment">
-            <span className="countdown-value">{String(timeLeft.minutes).padStart(2, '0')}</span>
-            <span className="countdown-label">Mins</span>
+        <div key="minutes" className="flex flex-col items-center px-2">
+            <span className="text-2xl font-extrabold text-white leading-none font-mono">{String(timeLeft.minutes).padStart(2, '0')}</span>
+            <span className="text-[10px] text-white/60 uppercase tracking-wider mt-0.5">Mins</span>
         </div>
     );
     
     segments.push(
-        <div key="seconds" className="countdown-segment">
-            <span className="countdown-value">{String(timeLeft.seconds).padStart(2, '0')}</span>
-            <span className="countdown-label">Secs</span>
+        <div key="seconds" className="flex flex-col items-center px-2">
+            <span className="text-2xl font-extrabold text-white leading-none font-mono">{String(timeLeft.seconds).padStart(2, '0')}</span>
+            <span className="text-[10px] text-white/60 uppercase tracking-wider mt-0.5">Secs</span>
         </div>
     );
 
     return (
-        <div className="countdown">
-            <div className="countdown-segments">
-                {segments.map((segment, index) => (
-                    <React.Fragment key={index}>
-                        {segment}
-                    </React.Fragment>
-                ))}
-            </div>
+        <div className="flex items-center justify-center gap-1">
+            {segments.map((segment, index) => (
+                <React.Fragment key={index}>
+                    {index > 0 && <span className="text-xl font-bold text-white/50 self-start mt-1">:</span>}
+                    {segment}
+                </React.Fragment>
+            ))}
         </div>
     );
 }
