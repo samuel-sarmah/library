@@ -1,27 +1,36 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #ffffff;
-  background-color: #000000;
-}
+@import "tailwindcss";
 
-a {
-  font-weight: 500;
-  color: #4da6ff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #7fbfff;
-}
+@layer base {
+  :root {
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.5;
+    color: #ffffff;
+    background-color: #000000;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  a {
+    font-weight: 500;
+    color: #4da6ff;
+    text-decoration: inherit;
+  }
+  
+  a:hover {
+    color: #7fbfff;
+  }
 
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #000000;
-  overflow-x: hidden;
+  html {
+    margin: 0 auto;
+    scroll-behavior: smooth;
+    max-width: 90%;
+  }
+
+  body {
+    padding: 0;
+    background-color: #000000;
+    overflow-x: hidden;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
 }
