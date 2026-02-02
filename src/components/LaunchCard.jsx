@@ -27,8 +27,24 @@ function LaunchCard({ launch }) {
     ].some(status => launch.status?.name?.includes(status));
     const statusText = isGoStatus ? 'GO' : 'TBD';
 
-    // Use user's local timezone
+    // Check if launch is within 10 days and is SpaceX or Artemis
+    const isSpaceXLaunch = launch.launch_service_provider?.name?.toLowerCase().includes('spacex');
+    const isArtemisLaunch = launch.name?.toLowerCase().includes('artemis');
     const launchDateTime = new Date(launch.net);
+    const now = new Date();
+    const tenDaysFromNow = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
+    const isWithin10Days = launchDateTime >= now && launchDateTime <= tenDaysFromNow;
+    const shouldShowVideoButton = (isSpaceXLaunch || isArtemisLaunch) && isWithin10Days;
+
+    // Generate SpaceX launch URL
+    const getSpaceXUrl = () => {
+        if (isSpaceXLaunch) {
+            return 'https://www.spacex.com/launches/sl-17-33';
+        }
+        return null;
+    };
+
+    // Use user's local timezone
     const localTimeParts = launchDateTime.toLocaleString('en-US', {
         hour: '2-digit',
         minute: '2-digit',
@@ -67,10 +83,17 @@ function LaunchCard({ launch }) {
         const position = Math.max(0, Math.min(100, (elapsed / totalWindow) * 100));
         const liftoffPosition = ((liftoff - windowStart) / totalWindow) * 100;
 
-        // Format times
+        // Format times with more detail
         const formatTime = (date) => date.toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
+            hour12: true
+        });
+
+        const formatLiftoffTime = (date) => date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
             hour12: true
         });
 
@@ -78,7 +101,8 @@ function LaunchCard({ launch }) {
             position,
             liftoffPosition,
             windowStartTime: formatTime(windowStart),
-            windowEndTime: formatTime(windowEnd)
+            windowEndTime: formatTime(windowEnd),
+            liftoffTime: formatLiftoffTime(liftoff)
         };
     };
 
@@ -152,94 +176,59 @@ function LaunchCard({ launch }) {
                                 style={{ width: `${Math.min(sliderData.position, 100)}%` }}
                             />
 
+                            {/* Liftoff indicator dot - now green */}
                             <div
-                                className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-white rounded-full border-2 border-[#111]"
+                                className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#111]"
                                 style={{ left: `${sliderData.liftoffPosition}%`, transform: 'translate(-50%, -50%)' }}
                             />
                         </div>
                         <div className="flex justify-between mt-1 text-[9px] text-white/70">
-                            <span>{sliderData.windowStartTime}</span>
-                            <span className="text-white">Liftoff</span>
-                            <span>{sliderData.windowEndTime}</span>
+                            <span>Window open</span>
+                            <span className="text-green-400 font-medium">Liftoff: {sliderData.liftoffTime}</span>
+                            <span>close: {sliderData.windowEndTime}</span>
                         </div>
                     </div>
                 )}
                 
-                {/* Debug: Always show video button - aligned below progress bar */}
-                <div className="relative mt-auto pt-3 hidden lg:block">
-                    <button
-                        className="w-full px-3 py-2 bg-[#7f1212] text-white text-xs font-medium rounded-sm hover:bg-[#9a1515] transition-colors flex items-center justify-center gap-1"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (videoUrls.length === 1 && videoUrls[0]) {
-                                window.open(videoUrls[0].url, '_blank');
-                            } else if (videoUrls.length > 0) {
-                                setShowStreamDropdown(!showStreamDropdown);
-                            } else {
-                                alert('No video URLs available for this launch');
-                            }
-                        }}
-                    >
-                        Watch Livestream
-                        {videoUrls.length > 1 && <span className="text-[10px]">▼</span>}
-                    </button>
-
-                    {showStreamDropdown && videoUrls.length > 1 && (
-                        <div
-                            className="absolute bottom-full left-0 right-0 mb-1 bg-[#1a1a1a] border border-[#333] rounded overflow-hidden z-50 min-w-[150px]"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {videoUrls.map((video, index) => (
-                                <a
-                                    key={index}
-                                    href={video.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block px-3 py-2 text-xs text-white hover:bg-[#333] transition-colors border-b border-[#333] last:border-b-0"
-                                >
-                                    {video.title || video.type?.name || `Stream ${index + 1}`}
-                                </a>
-                            ))}
+                {/* Video button - only for SpaceX and Artemis launches within 10 days */}
+                {shouldShowVideoButton && (
+                    <>
+                        <div className="relative mt-auto pt-3 hidden lg:block">
+                            <button
+                                className="w-full px-3 py-2 bg-[#7f1212] text-white text-xs font-medium rounded-sm hover:bg-[#9a1515] transition-colors flex items-center justify-center gap-1"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    const spacexUrl = getSpaceXUrl();
+                                    if (spacexUrl) {
+                                        window.open(spacexUrl, '_blank');
+                                    } else if (isArtemisLaunch) {
+                                        window.open('https://www.nasa.gov/artemis/', '_blank');
+                                    }
+                                }}
+                            >
+                                {isSpaceXLaunch ? 'Watch Launch' : 'Artemis Mission'}
+                            </button>
                         </div>
-                    )}
-                </div>
-                
-                {/* Mobile/Tablet video button */}
-                <div className="relative mt-3 lg:hidden">
-                    <button
-                        className="w-full px-3 py-2 bg-[#7f1212] text-white text-xs font-medium rounded-sm hover:bg-[#9a1515] transition-colors flex items-center justify-center gap-1"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (videoUrls.length === 1 && videoUrls[0]) {
-                                window.open(videoUrls[0].url, '_blank');
-                            } else if (videoUrls.length > 0) {
-                                setShowStreamDropdown(!showStreamDropdown);
-                            }
-                        }}
-                    >
-                        Watch Livestream
-                        {videoUrls.length > 1 && <span className="text-[10px]">▼</span>}
-                    </button>
-
-                    {showStreamDropdown && videoUrls.length > 1 && (
-                        <div
-                            className="absolute bottom-full left-0 right-0 mb-1 bg-[#1a1a1a] border border-[#333] rounded overflow-hidden z-50 min-w-[150px]"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {videoUrls.map((video, index) => (
-                                <a
-                                    key={index}
-                                    href={video.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="block px-3 py-2 text-xs text-white hover:bg-[#333] transition-colors border-b border-[#333] last:border-b-0"
-                                >
-                                    {video.title || video.type?.name || `Stream ${index + 1}`}
-                                </a>
-                            ))}
+                        
+                        {/* Mobile/Tablet video button */}
+                        <div className="relative mt-3 lg:hidden">
+                            <button
+                                className="w-full px-3 py-2 bg-[#7f1212] text-white text-xs font-medium rounded-sm hover:bg-[#9a1515] transition-colors flex items-center justify-center gap-1"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    const spacexUrl = getSpaceXUrl();
+                                    if (spacexUrl) {
+                                        window.open(spacexUrl, '_blank');
+                                    } else if (isArtemisLaunch) {
+                                        window.open('https://www.nasa.gov/artemis/', '_blank');
+                                    }
+                                }}
+                            >
+                                {isSpaceXLaunch ? 'Watch Launch' : 'Artemis Mission'}
+                            </button>
                         </div>
-                    )}
-                </div>
+                    </>
+                )}
             </div>
         </div>
     );
