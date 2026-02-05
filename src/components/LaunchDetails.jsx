@@ -65,7 +65,7 @@ function LaunchDetails() {
                     className="mb-6 px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded text-white hover:bg-[#222] transition-colors"
                     onClick={() => navigate('/')}
                 >
-                    ← Back to Launches
+                    Back to Launches
                 </button>
 
                 <div className="rounded-md overflow-hidden mb-8">
