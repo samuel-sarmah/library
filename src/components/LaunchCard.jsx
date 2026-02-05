@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Countdown from './Countdown';
 
-function LaunchCard({ launch }) {
+function LaunchCard({ launch, launchType }) {
     const navigate = useNavigate();
     const [showStreamDropdown, setShowStreamDropdown] = useState(false);
 
@@ -133,9 +133,11 @@ function LaunchCard({ launch }) {
                         <div className="text-base font-bold text-white truncate flex-1" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
                             {payloadDisplay}
                         </div>
-                        <div className={`px-2 py-0.5 rounded-sm text-xs font-bold shrink-0 ${isGoStatus ? 'bg-green-600 text-white' : 'bg-yellow-600 text-black'}`}>
-                            {statusText}
-                        </div>
+                        {launchType === 'upcoming' && (
+                            <div className={`px-2 py-0.5 rounded-sm text-xs font-bold shrink-0 ${isGoStatus ? 'bg-green-600 text-white' : 'bg-yellow-600 text-black'}`}>
+                                {statusText}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -151,8 +153,7 @@ function LaunchCard({ launch }) {
 
             <div className="bg-[#111] py-2 px-3 border-t border-[#1a1a1a]">
                 <div className="flex justify-center items-start gap-1">
-                    <span className="text-2xl font-extrabold text-white font-mono leading-none">T-</span>
-                    <Countdown launchDate={launch.net} />
+                    <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} />
                 </div>
             </div>
 
@@ -167,7 +168,7 @@ function LaunchCard({ launch }) {
                     📅 {localDate}
                 </div>
 
-                {sliderData && (
+                {sliderData && launchType === 'upcoming' && (
                     <div className="mt-2 px-1">
                         <div className="relative h-1.5 bg-[#333] rounded">
                             {/* Progress bar */}

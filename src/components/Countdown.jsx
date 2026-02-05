@@ -41,8 +41,8 @@ function Countdown({ launchDate, prominent = false, showTPrefix = false }) {
 
     // Prominent display variant
     if (prominent) {
-        const prefix = timeLeft.launched ? 'T+' : 'T-';
-        const timeString = [
+        const prefix = timeLeft.launched ? 'Launched' : 'T-';
+        const timeString = timeLeft.launched ? '' : [
             timeLeft.days > 0 ? String(timeLeft.days).padStart(2, '0') : null,
             String(timeLeft.hours).padStart(2, '0'),
             String(timeLeft.minutes).padStart(2, '0'),
@@ -51,8 +51,8 @@ function Countdown({ launchDate, prominent = false, showTPrefix = false }) {
 
         return (
             <div className="flex justify-center items-center gap-1 text-xl font-mono">
-                {showTPrefix && <span className="text-cyan-400 font-bold">{prefix}</span>}
-                <span className="text-white">{timeString}</span>
+                {showTPrefix && <span className={`${timeLeft.launched ? 'text-green-400' : 'text-cyan-400'} font-bold`}>{prefix}</span>}
+                {!timeLeft.launched && <span className="text-white">{timeString}</span>}
             </div>
         );
     }
