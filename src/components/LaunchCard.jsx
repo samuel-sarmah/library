@@ -32,6 +32,7 @@ function LaunchCard({ launch, launchType }) {
     const isArtemisLaunch = launch.name?.toLowerCase().includes('artemis');
     const launchDateTime = new Date(launch.net);
     const now = new Date();
+    const hasLaunched = launchDateTime < now;
     const tenDaysFromNow = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
     const isWithin10Days = launchDateTime >= now && launchDateTime <= tenDaysFromNow;
     const shouldShowVideoButton = (isSpaceXLaunch || isArtemisLaunch) && isWithin10Days;
@@ -116,18 +117,14 @@ function LaunchCard({ launch, launchType }) {
 
     return (
         <div
-            className="relative h-[380px] rounded-md overflow-hidden cursor-pointer bg-[#0d0d0d] border border-[#1a1a1a] hover:border-[#444] transition-colors"
+            className="relative h-[450px] rounded-md overflow-hidden cursor-pointer bg-[#0d0d0d] border border-[#1a1a1a] hover:border-[#444] transition-colors flex flex-col"
             onClick={handleCardClick}
         >
             {/* Top Header - Provider, Payload & Status */}
-            <div className="absolute top-0 left-0 right-0 z-10 p-3 ">
+            <div className="absolute top-0 left-0 right-0 z-10 p-3 bg-gradient-to-b from-black/70 to-transparent">
                 <div className="flex flex-col gap-1">
-                    {providerLogo && (
-                        <img
-                            src={providerLogo}
-                            alt={providerName}
-                            className="max-w-[80px] max-h-8 object-contain"
-                        />
+                    {providerName && (
+                        <div className="text-xs text-white/80 font-medium uppercase tracking-wide">{providerName}</div>
                     )}
                     <div className="flex items-center justify-between gap-2">
                         <div className="text-base font-bold text-white truncate flex-1" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
@@ -142,8 +139,8 @@ function LaunchCard({ launch, launchType }) {
                 </div>
             </div>
 
-            {/* Image Section - 50% height */}
-            <div className="h-[50%] relative">
+            {/* Image Section - 60% height */}
+            <div className="h-[60%] relative shrink-0">
                 <img
                     src={launch.image || 'https://via.placeholder.com/400x300?text=No+Image'}
                     alt={launch.name}
@@ -151,14 +148,14 @@ function LaunchCard({ launch, launchType }) {
                 />
             </div>
 
-            <div className="bg-[#111] py-2 px-3 border-t border-[#1a1a1a]">
+            <div className="bg-[#111] py-1 px-3 border-t border-[#1a1a1a] shrink-0">
                 <div className="flex justify-center items-start gap-1">
-                    <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} />
+                    <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} rocket={launch.rocket} />
                 </div>
             </div>
 
             {/* Content Section */}
-            <div className="flex-1 p-3 bg-[#0d0d0d] flex flex-col">
+            <div className="flex-1 p-2 bg-[#0d0d0d] flex flex-col overflow-hidden min-h-0">
                 <div className="text-sm text-white font-medium">
                     {localTimeMain}
                     <span className="text-white/70"> {localTimePeriod}</span>
@@ -179,7 +176,7 @@ function LaunchCard({ launch, launchType }) {
 
                             {/* Liftoff indicator dot - now green */}
                             <div
-                                className="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#111]"
+                                className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#111]"
                                 style={{ left: `${sliderData.liftoffPosition}%`, transform: 'translate(-50%, -50%)' }}
                             />
                         </div>

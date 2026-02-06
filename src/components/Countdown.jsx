@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
 
-function Countdown({ launchDate, prominent = false, showTPrefix = false }) {
+function Countdown({ launchDate, prominent = false, showTPrefix = false, rocket = null }) {
     const [timeLeft, setTimeLeft] = useState({
         days: 0,
         hours: 0,
@@ -41,18 +41,52 @@ function Countdown({ launchDate, prominent = false, showTPrefix = false }) {
 
     // Prominent display variant
     if (prominent) {
-        const prefix = timeLeft.launched ? 'Launched' : 'T-';
-        const timeString = timeLeft.launched ? '' : [
-            timeLeft.days > 0 ? String(timeLeft.days).padStart(2, '0') : null,
-            String(timeLeft.hours).padStart(2, '0'),
-            String(timeLeft.minutes).padStart(2, '0'),
-            String(timeLeft.seconds).padStart(2, '0')
-        ].filter(Boolean).join(':');
+        if (timeLeft.launched) {
+            return (
+                <div className="flex flex-col items-center gap-2">
+                    <div className="flex justify-center items-center gap-1 text-xl font-mono">
+                        <span className="text-green-400 font-bold">Launched</span>
+                    </div>
+                    {rocket?.configuration && (
+                        <div className="text-center text-xs">
+                            <div className="text-white/80 font-medium">{rocket.configuration.name}</div>
+                            <div className="text-white/60">
+                                {rocket.configuration.length && <span>{rocket.configuration.length}m</span>}
+                                {rocket.configuration.launch_mass && <span> • {rocket.configuration.launch_mass}t</span>}
+                                {rocket.configuration.reusable && <span> • Reusable</span>}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        
 
         return (
             <div className="flex justify-center items-center gap-1 text-xl font-mono">
-                {showTPrefix && <span className={`${timeLeft.launched ? 'text-green-400' : 'text-cyan-400'} font-bold`}>{prefix}</span>}
-                {!timeLeft.launched && <span className="text-white">{timeString}</span>}
+                {showTPrefix && <span className="text-cyan-400 font-bold self-start">T-</span>}
+                {timeLeft.days > 0 && (
+                    <div className="flex flex-col items-center">
+                        <span className="text-white">{String(timeLeft.days).padStart(2, '0')}</span>
+                        <span className="text-[10px] text-white/60 uppercase tracking-wider mt-1">Days</span>
+                    </div>
+                )}
+                {timeLeft.days > 0 && <span className="text-white self-start">:</span>}
+                <div className="flex flex-col items-center">
+                    <span className="text-white">{String(timeLeft.hours).padStart(2, '0')}</span>
+                    <span className="text-[10px] text-white/60 uppercase tracking-wider mt-1">Hrs</span>
+                </div>
+                <span className="text-white self-start">:</span>
+                <div className="flex flex-col items-center">
+                    <span className="text-white">{String(timeLeft.minutes).padStart(2, '0')}</span>
+                    <span className="text-[10px] text-white/60 uppercase tracking-wider mt-1">Mins</span>
+                </div>
+                <span className="text-white self-start">:</span>
+                <div className="flex flex-col items-center">
+                    <span className="text-white">{String(timeLeft.seconds).padStart(2, '0')}</span>
+                    <span className="text-[10px] text-white/60 uppercase tracking-wider mt-1">Secs</span>
+                </div>
             </div>
         );
     }
