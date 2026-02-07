@@ -153,7 +153,7 @@ function LaunchCard({ launch, launchType }) {
 
             {/* Content Section */}
             <div className="absolute bottom-0 left-0 right-0 z-10 p-2 flex flex-col">
-                <div className="flex justify-start items-start gap-1 mb-1">
+                <div className="flex justify-center items-center gap-1 mb-1">
                     <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} rocket={launch.rocket} />
                 </div>
                 <div className="text-xs text-white/80 font-medium">
