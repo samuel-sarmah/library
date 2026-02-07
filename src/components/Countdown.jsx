@@ -64,28 +64,28 @@ function Countdown({ launchDate, prominent = false, showTPrefix = false, rocket 
         
 
         return (
-            <div className="flex justify-center items-center gap-1 text-xl font-mono">
-                {showTPrefix && <span className="text-white-700 font-bold self-start">T-</span>}
+            <div className="flex justify-start items-center gap-1 text-base font-mono">
+                {showTPrefix && <span className="text-white/70 font-bold self-start">T-</span>}
                 {timeLeft.days > 0 && (
                     <div className="flex flex-col items-center">
-                        <span className="text-white/900 font-bold">{String(timeLeft.days).padStart(2, '0')}</span>
-                        <span className="text-[10px] text-white/600 font-bold uppercase tracking-wider mt-1">Days</span>
+                        <span className="text-white font-bold">{String(timeLeft.days).padStart(2, '0')}</span>
+                        <span className="text-[9px] text-white/50 uppercase tracking-wider">Days</span>
                     </div>
                 )}
-                {timeLeft.days > 0 && <span className="text-white self-start">:</span>}
+                {timeLeft.days > 0 && <span className="text-white/60 self-start">:</span>}
                 <div className="flex flex-col items-center">
-                    <span className="text-white/900 font-bold">{String(timeLeft.hours).padStart(2, '0')}</span>
-                    <span className="text-[10px] text-white/600 font-bold uppercase tracking-wider mt-1">Hrs</span>
+                    <span className="text-white font-bold">{String(timeLeft.hours).padStart(2, '0')}</span>
+                    <span className="text-[9px] text-white/50 uppercase tracking-wider">Hrs</span>
                 </div>
-                <span className="text-white self-start">:</span>
+                <span className="text-white/60 self-start">:</span>
                 <div className="flex flex-col items-center">
-                    <span className="text-white/900 font-bold">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                    <span className="text-[10px] text-white/600 font-bold uppercase tracking-wider mt-1">Mins</span>
+                    <span className="text-white font-bold">{String(timeLeft.minutes).padStart(2, '0')}</span>
+                    <span className="text-[9px] text-white/50 uppercase tracking-wider">Mins</span>
                 </div>
-                <span className="text-white self-start">:</span>
+                <span className="text-white/60 self-start">:</span>
                 <div className="flex flex-col items-center">
-                    <span className="text-white/900 font-bold">{String(timeLeft.seconds).padStart(2, '0')}</span>
-                    <span className="text-[10px] text-white/600 font-bold uppercase tracking-wider mt-1">Secs</span>
+                    <span className="text-white font-bold">{String(timeLeft.seconds).padStart(2, '0')}</span>
+                    <span className="text-[9px] text-white/50 uppercase tracking-wider">Secs</span>
                 </div>
             </div>
         );

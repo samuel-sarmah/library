@@ -117,17 +117,17 @@ function LaunchCard({ launch, launchType }) {
 
     return (
         <div
-            className="relative h-[450px] rounded-md overflow-hidden cursor-pointer bg-[#0d0d0d] border border-[#1a1a1a] hover:border-[#444] transition-colors flex flex-col"
+            className="relative h-[380px] rounded-md overflow-hidden cursor-pointer bg-[#0d0d0d] border border-[#1a1a1a] hover:border-[#444] transition-colors flex flex-col"
             onClick={handleCardClick}
         >
             {/* Top Header - Provider, Payload & Status */}
-            <div className="absolute top-0 left-0 right-0 z-10 p-3 bg-gradient-to-b from-black/70 to-transparent">
-                <div className="flex flex-col gap-1">
+            <div className="absolute top-0 left-0 right-0 z-10 p-3 bg-gradient-to-b from-black/80 via-black/50 to-transparent" style={{ paddingBottom: '2rem' }}>
+                <div className="flex flex-col gap-0.5">
                     {providerName && (
-                        <div className="text-xs text-white/80 font-medium uppercase tracking-wide">{providerName}</div>
+                        <div className="text-[10px] text-white/60 font-medium uppercase tracking-wide">{providerName}</div>
                     )}
                     <div className="flex items-center justify-between gap-2">
-                        <div className="text-base font-bold text-white truncate flex-1" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
+                        <div className="text-sm font-bold text-white truncate flex-1" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
                             {payloadDisplay}
                         </div>
                         {launchType === 'upcoming' && (
@@ -139,24 +139,24 @@ function LaunchCard({ launch, launchType }) {
                 </div>
             </div>
 
-            {/* Image Section - 70% height */}
-            <div className="h-[70%] relative shrink-0">
+            {/* Image Section - full card background */}
+            <div className="absolute inset-0">
                 <img
                     src={launch.image || 'https://via.placeholder.com/400x300?text=No+Image'}
                     alt={launch.name}
                     className="w-full h-full object-cover"
                 />
-                {/* Timer overlay on image */}
-                <div className="absolute bottom-0 left-0 right-0 py-1 px-3 bg-gradient-to-t from-black/70  via-black/50 to-transparent">
-                    <div className="flex justify-center items-start gap-1">
-                        <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} rocket={launch.rocket} />
-                    </div>
-                </div>
+                {/* Gradient overlays - dark top & bottom, clear center */}
+                <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-transparent" style={{ height: '35%' }} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" style={{ top: '50%' }} />
             </div>
 
             {/* Content Section */}
-            <div className="flex-1 p-2 bg-[#0d0d0d] flex flex-col overflow-hidden min-h-0">
-                <div className="text-sm text-white font-medium">
+            <div className="absolute bottom-0 left-0 right-0 z-10 p-2 flex flex-col">
+                <div className="flex justify-start items-start gap-1 mb-1">
+                    <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} rocket={launch.rocket} />
+                </div>
+                <div className="text-xs text-white/80 font-medium">
                     {localTimeMain}
                     <span className="text-white/70"> {localTimePeriod}</span>
                     <span className="text-white/50 text-xs"> ({tzAbbr})</span>
@@ -174,7 +174,6 @@ function LaunchCard({ launch, launchType }) {
                                 style={{ width: `${Math.min(sliderData.position, 100)}%` }}
                             />
 
-                            {/* Liftoff indicator dot - now green */}
                             <div
                                 className="absolute w-4 h-4 bg-green-500 rounded-full border-2 border-[#111]"
                                 style={{ left: `${sliderData.liftoffPosition}%`, top: '50%', transform: 'translate(-50%, -50%)' }}
