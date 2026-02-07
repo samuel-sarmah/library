@@ -139,18 +139,18 @@ function LaunchCard({ launch, launchType }) {
                 </div>
             </div>
 
-            {/* Image Section - 60% height */}
-            <div className="h-[60%] relative shrink-0">
+            {/* Image Section - 70% height */}
+            <div className="h-[70%] relative shrink-0">
                 <img
                     src={launch.image || 'https://via.placeholder.com/400x300?text=No+Image'}
                     alt={launch.name}
                     className="w-full h-full object-cover"
                 />
-            </div>
-
-            <div className="bg-[#111] py-1 px-3 border-t border-[#1a1a1a] shrink-0">
-                <div className="flex justify-center items-start gap-1">
-                    <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} rocket={launch.rocket} />
+                {/* Timer overlay on image */}
+                <div className="absolute bottom-0 left-0 right-0 py-1 px-3 bg-gradient-to-t from-black/70  via-black/50 to-transparent">
+                    <div className="flex justify-center items-start gap-1">
+                        <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} rocket={launch.rocket} />
+                    </div>
                 </div>
             </div>
 
@@ -167,7 +167,7 @@ function LaunchCard({ launch, launchType }) {
 
                 {sliderData && launchType === 'upcoming' && (
                     <div className="mt-2 px-1">
-                        <div className="relative h-1.5 bg-[#333] rounded">
+                        <div className="relative h-[2px] bg-[#333] rounded">
                             {/* Progress bar */}
                             <div
                                 className="absolute h-full bg-white/30 rounded"
@@ -176,8 +176,8 @@ function LaunchCard({ launch, launchType }) {
 
                             {/* Liftoff indicator dot - now green */}
                             <div
-                                className="absolute top-1/2 -translate-y-1/2 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#111]"
-                                style={{ left: `${sliderData.liftoffPosition}%`, transform: 'translate(-50%, -50%)' }}
+                                className="absolute w-4 h-4 bg-green-500 rounded-full border-2 border-[#111]"
+                                style={{ left: `${sliderData.liftoffPosition}%`, top: '50%', transform: 'translate(-50%, -50%)' }}
                             />
                         </div>
                         <div className="flex justify-between mt-1 text-[9px] text-white/70">
