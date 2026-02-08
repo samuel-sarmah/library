@@ -40,13 +40,17 @@ function LaunchList() {
                 
                 const now = new Date();
                 const processedLaunches = data.results.filter(launch => {
-                    const launchTime = new Date(launch.net);
-                    const hoursSinceLaunch = (now - launchTime) / (1000 * 60 * 60);
-                    
                     if (launchType === 'upcoming') {
-                        return hoursSinceLaunch < 12;
+                        // Move to previous as soon as window closes or launch time passes
+                        const windowEnd = launch.window_end ? new Date(launch.window_end) : null;
+                        const launchTime = new Date(launch.net);
+                        const cutoff = windowEnd && windowEnd > launchTime ? windowEnd : launchTime;
+                        return cutoff > now;
                     } else {
-                        return hoursSinceLaunch >= 12;
+                        const windowEnd = launch.window_end ? new Date(launch.window_end) : null;
+                        const launchTime = new Date(launch.net);
+                        const cutoff = windowEnd && windowEnd > launchTime ? windowEnd : launchTime;
+                        return cutoff <= now;
                     }
                 });
 
