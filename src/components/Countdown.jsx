@@ -64,7 +64,7 @@ function Countdown({ launchDate, prominent = false, showTPrefix = false, rocket 
         
 
         return (
-            <div className="flex justify-start items-center gap-1 text-base font-mono">
+            <div className="flex justify-center items-center gap-1 text-base font-mono bg-black/50 backdrop-blur-sm rounded px-2 py-1">
                 {showTPrefix && <span className="text-white/70 font-bold self-start">T-</span>}
                 {timeLeft.days > 0 && (
                     <div className="flex flex-col items-center">
