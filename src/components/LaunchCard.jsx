@@ -121,7 +121,7 @@ function LaunchCard({ launch, launchType }) {
             onClick={handleCardClick}
         >
             {/* Top Header - Provider, Payload & Status */}
-            <div className="absolute top-0 left-0 right-0 z-10 p-3 bg-gradient-to-b from-black/80 via-black/50 to-transparent" style={{ paddingBottom: '2rem' }}>
+            <div className="absolute top-0 left-0 right-0 z-10 p-3 bg-gradient-to-b from-black/60 to-transparent" style={{ paddingBottom: '2rem' }}>
                 <div className="flex flex-col gap-0.5">
                     {providerName && (
                         <div className="text-[10px] text-white/60 font-medium uppercase tracking-wide">{providerName}</div>
@@ -144,16 +144,14 @@ function LaunchCard({ launch, launchType }) {
                 <img
                     src={launch.image || 'https://via.placeholder.com/400x300?text=No+Image'}
                     alt={launch.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                 />
-                {/* Gradient overlays - dark top & bottom, clear center */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-transparent" style={{ height: '35%' }} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" style={{ top: '50%' }} />
+                
             </div>
 
             {/* Content Section */}
-            <div className="absolute bottom-0 left-0 right-0 z-10 p-2 flex flex-col">
-                <div className="flex justify-center items-center gap-1 mb-1">
+            <div className="absolute bottom-0 left-0 right-0 z-10 p-2 flex flex-col bg-gradient-to-t from-black via-black/80 to-transparent">
+                <div className="flex items-center justify-center gap-1 mb-1 ">
                     <Countdown launchDate={launch.net} prominent={true} showTPrefix={true} rocket={launch.rocket} />
                 </div>
                 <div className="text-xs text-white/80 font-medium">
