@@ -12,7 +12,7 @@ function LaunchCard({ launch, launchType }) {
 
 
 
-    const providerLogo = launch.launch_service_provider?.logo_url;
+    const providerLogo = launch.launch_service_provider?.logo?.image_url || launch.launch_service_provider?.logo?.thumbnail_url;
     const providerName = launch.launch_service_provider?.abbrev || launch.launch_service_provider?.name;
 
     const payloads = launch.mission?.launches?.[0]?.payloads || [];
@@ -121,13 +121,22 @@ function LaunchCard({ launch, launchType }) {
             onClick={handleCardClick}
         >
             {/* Top Header - Provider, Payload & Status */}
-            <div className="absolute top-0 left-0 right-0 z-10 p-3 bg-gradient-to-b from-black/60 to-transparent" style={{ paddingBottom: '2rem' }}>
-                <div className="flex flex-col gap-0.5">
-                    {providerName && (
-                        <div className="text-[10px] text-white/60 font-medium uppercase tracking-wide">{providerName}</div>
+            <div className="absolute h-10 top-0 left-0 right-0 z-10 " style={{ paddingBottom: '2rem' }}>
+                <div className="flex flex-col  gap-0.5 bg-gradient-to-b from-black/70 via-black/40 to-tansparent">
+                    {providerLogo ? (
+                        <img 
+                            src={providerLogo} 
+                            alt={providerName}
+                            className="h-5 w-auto object-contain self-start"
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                            }}
+                        />
+                    ) : (
+                        <div className="text-[10px] text-white/200 font-medium uppercase tracking-wide">{providerName}</div>
                     )}
                     <div className="flex items-center justify-between gap-2">
-                        <div className="text-sm font-bold text-white truncate flex-1" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
+                        <div className="text-lg font-bold text-white truncate flex-1" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
                             {payloadDisplay}
                         </div>
                         {launchType === 'upcoming' && (
@@ -142,7 +151,7 @@ function LaunchCard({ launch, launchType }) {
             {/* Image Section - full card background */}
             <div className="absolute inset-0">
                 <img
-                    src={launch.image || 'https://via.placeholder.com/400x300?text=No+Image'}
+                    src={launch.image?.image_url || launch.image?.thumbnail_url || 'https://via.placeholder.com/400x300?text=No+Image'}
                     alt={launch.name}
                     className="w-full h-full object-cover object-top"
                 />

@@ -10,10 +10,12 @@ function LaunchDetails() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetch(`https://ll.thespacedevs.com/2.2.0/launch/${id}/?mode=detailed`)
+        fetch(`/api/launch/${id}`)
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
+                    return response.json().catch(() => null).then(errorData => {
+                        throw new Error(errorData?.error || errorData?.detail || `API error: ${response.status}`);
+                    });
                 }
                 return response.json();
             })
@@ -70,7 +72,7 @@ function LaunchDetails() {
 
                 <div className="rounded-md overflow-hidden mb-8">
                     <img
-                        src={launch.image || 'https://via.placeholder.com/800x400?text=No+Image'}
+                        src={launch.image?.image_url || launch.image?.thumbnail_url || 'https://via.placeholder.com/800x400?text=No+Image'}
                         alt={launch.name}
                         className="w-full h-64 md:h-96 object-cover"
                     />

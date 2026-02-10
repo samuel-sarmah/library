@@ -22,14 +22,13 @@ function LaunchList() {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const endpoint = launchType === 'upcoming' 
-                    ? 'https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=100'
-                    : 'https://ll.thespacedevs.com/2.2.0/launch/previous/?limit=100';
+                const endpoint = `/api/launches?type=${launchType}&limit=100`;
                 
                 const response = await fetch(endpoint, { signal: controller.signal });
                 
                 if (!response.ok) {
-                    throw new Error(`API error: ${response.status}`);
+                    const errorData = await response.json().catch(() => null);
+                    throw new Error(errorData?.error || errorData?.detail || `API error: ${response.status}`);
                 }
                 
                 const data = await response.json();
