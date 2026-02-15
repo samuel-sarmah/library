@@ -201,7 +201,7 @@ function LaunchCard({ launch, launchType }) {
                                         setShowStreamDropdown(!showStreamDropdown);
                                     }}
                                 >
-                                    ▶ Watch Launch ({videoUrls.length})
+                                    Watch Launch
                                 </button>
                                 {showStreamDropdown && (
                                     <div className="absolute bottom-full left-0 right-0 mb-1 bg-[#1a1a1a] border border-[#333] rounded-sm shadow-lg z-20 max-h-40 overflow-y-auto">
@@ -216,7 +216,7 @@ function LaunchCard({ launch, launchType }) {
                                                 }}
                                                 title={vid.title || vid.url}
                                             >
-                                                ▶ {vid.title || `Stream ${index + 1}`}
+                                                {vid.title || `Stream ${index + 1}`}
                                             </button>
                                         ))}
                                     </div>
