@@ -27,23 +27,7 @@ function LaunchCard({ launch, launchType }) {
     ].some(status => launch.status?.name?.includes(status));
     const statusText = isGoStatus ? 'GO' : 'TBD';
 
-    // Check if launch is within 10 days and is SpaceX or Artemis
-    const isSpaceXLaunch = launch.launch_service_provider?.name?.toLowerCase().includes('spacex');
-    const isArtemisLaunch = launch.name?.toLowerCase().includes('artemis');
     const launchDateTime = new Date(launch.net);
-    const now = new Date();
-    const hasLaunched = launchDateTime < now;
-    const tenDaysFromNow = new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000);
-    const isWithin10Days = launchDateTime >= now && launchDateTime <= tenDaysFromNow;
-    const shouldShowVideoButton = (isSpaceXLaunch || isArtemisLaunch) && isWithin10Days;
-
-    // Generate SpaceX launch URL
-    const getSpaceXUrl = () => {
-        if (isSpaceXLaunch) {
-            return 'https://www.spacex.com/launches/sl-17-33';
-        }
-        return null;
-    };
 
     // Use user's local timezone
     const localTimeParts = launchDateTime.toLocaleString('en-US', {
@@ -82,7 +66,7 @@ function LaunchCard({ launch, launchType }) {
 
         const elapsed = now - windowStart;
         const position = Math.max(0, Math.min(100, (elapsed / totalWindow) * 100));
-        const liftoffPosition = ((liftoff - windowStart) / totalWindow) * 100;
+        const liftoffPosition = Math.max(0, Math.min(100, ((liftoff - windowStart) / totalWindow) * 100));
 
         // Format times with more detail
         const formatTime = (date) => date.toLocaleTimeString('en-US', {
@@ -109,10 +93,11 @@ function LaunchCard({ launch, launchType }) {
 
     const sliderData = getSliderPosition();
 
-    // Get video URLs - API returns vidURLs array
+    // Get video URLs from the API (vidURLs or vid_urls)
     const videoUrls = Array.isArray(launch.vidURLs) ? launch.vidURLs :
         Array.isArray(launch.vid_urls) ? launch.vid_urls : [];
-    
+    const hasVideoUrls = videoUrls.length > 0;
+    const primaryVideoUrl = hasVideoUrls ? videoUrls[0].url : null;
 
 
     return (
@@ -187,51 +172,58 @@ function LaunchCard({ launch, launchType }) {
                             />
                         </div>
                         <div className="flex justify-between mt-1 text-[9px] text-white/70">
-                            <span>Window open</span>
+                            <span>Open: {sliderData.windowStartTime}</span>
                             <span className="text-green-400 font-medium">Liftoff: {sliderData.liftoffTime}</span>
-                            <span>close: {sliderData.windowEndTime}</span>
+                            <span>Close: {sliderData.windowEndTime}</span>
                         </div>
                     </div>
                 )}
                 
-                {/* Video button - only for SpaceX and Artemis launches within 10 days */}
-                {shouldShowVideoButton && (
-                    <>
-                        <div className="relative mt-auto pt-3 hidden lg:block">
+                {/* Video button - shown for any launch that has video URLs from the API */}
+                {hasVideoUrls && (
+                    <div className="relative mt-2">
+                        {videoUrls.length === 1 ? (
                             <button
                                 className="w-full px-3 py-2 bg-[#7f1212] text-white text-xs font-medium rounded-sm hover:bg-[#9a1515] transition-colors flex items-center justify-center gap-1"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    const spacexUrl = getSpaceXUrl();
-                                    if (spacexUrl) {
-                                        window.open(spacexUrl, '_blank');
-                                    } else if (isArtemisLaunch) {
-                                        window.open('https://www.nasa.gov/artemis/', '_blank');
-                                    }
+                                    window.open(primaryVideoUrl, '_blank');
                                 }}
                             >
-                                {isSpaceXLaunch ? 'Watch Launch' : 'Artemis Mission'}
+                                Watch Launch
                             </button>
-                        </div>
-                        
-                        {/* Mobile/Tablet video button */}
-                        <div className="relative mt-3 lg:hidden">
-                            <button
-                                className="w-full px-3 py-2 bg-[#7f1212] text-white text-xs font-medium rounded-sm hover:bg-[#9a1515] transition-colors flex items-center justify-center gap-1"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    const spacexUrl = getSpaceXUrl();
-                                    if (spacexUrl) {
-                                        window.open(spacexUrl, '_blank');
-                                    } else if (isArtemisLaunch) {
-                                        window.open('https://www.nasa.gov/artemis/', '_blank');
-                                    }
-                                }}
-                            >
-                                {isSpaceXLaunch ? 'Watch Launch' : 'Artemis Mission'}
-                            </button>
-                        </div>
-                    </>
+                        ) : (
+                            <>
+                                <button
+                                    className="w-full px-3 py-2 bg-[#7f1212] text-white text-xs font-medium rounded-sm hover:bg-[#9a1515] transition-colors flex items-center justify-center gap-1"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setShowStreamDropdown(!showStreamDropdown);
+                                    }}
+                                >
+                                    ▶ Watch Launch ({videoUrls.length})
+                                </button>
+                                {showStreamDropdown && (
+                                    <div className="absolute bottom-full left-0 right-0 mb-1 bg-[#1a1a1a] border border-[#333] rounded-sm shadow-lg z-20 max-h-40 overflow-y-auto">
+                                        {videoUrls.map((vid, index) => (
+                                            <button
+                                                key={index}
+                                                className="w-full px-3 py-2 text-left text-xs text-white hover:bg-[#333] transition-colors truncate"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    window.open(vid.url, '_blank');
+                                                    setShowStreamDropdown(false);
+                                                }}
+                                                title={vid.title || vid.url}
+                                            >
+                                                ▶ {vid.title || `Stream ${index + 1}`}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
                 )}
             </div>
         </div>
