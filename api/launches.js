@@ -12,13 +12,60 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'API key not configured on server' });
     }
 
-    const endpoint = `https://ll.thespacedevs.com/2.3.0/launches/${type}/?limit=${effectiveLimit}&mode=normal`;
+    const endpoint = `https://ll.thespacedevs.com/2.3.0/launches/${type}/?limit=${effectiveLimit}&mode=detailed`;
 
     try {
         const response = await fetch(endpoint, {
             headers: { 'Authorization': `Token ${apiKey}` },
         });
         const data = await response.json();
+
+        const normalizeVideoUrls = (launch) => {
+            const entries = [];
+
+            const pushEntry = (item) => {
+                if (!item) return;
+
+                if (typeof item === 'string') {
+                    entries.push({ url: item, title: 'Launch Stream' });
+                    return;
+                }
+
+                if (typeof item === 'object') {
+                    const url = item.url || item.uri || item.link;
+                    if (typeof url === 'string' && url.trim()) {
+                        entries.push({
+                            ...item,
+                            url,
+                            title: item.title || item.name || 'Launch Stream',
+                        });
+                    }
+                }
+            };
+
+            const listSources = [launch?.video_urls, launch?.vid_urls, launch?.vidURLs];
+            listSources.forEach((source) => {
+                if (Array.isArray(source)) {
+                    source.forEach(pushEntry);
+                }
+            });
+
+            const singleSources = [launch?.webcast_url, launch?.stream_url, launch?.video_url];
+            singleSources.forEach(pushEntry);
+
+            const unique = [];
+            const seen = new Set();
+
+            entries.forEach((item) => {
+                const url = item.url?.trim();
+                if (!url || !/^https?:\/\//i.test(url)) return;
+                if (seen.has(url)) return;
+                seen.add(url);
+                unique.push({ ...item, url });
+            });
+
+            return unique;
+        };
 
         const normalizedData = {
             ...data,
@@ -28,6 +75,7 @@ export default async function handler(req, res) {
                     window_open: launch.window_start || null,
                     window_close: launch.window_end || null,
                     liftoff_exact: launch.net || null,
+                    video_urls: normalizeVideoUrls(launch),
                 }))
                 : data?.results,
         };

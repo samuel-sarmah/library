@@ -96,9 +96,22 @@ function LaunchCard({ launch, launchType }) {
 
     const sliderData = getSliderPosition();
 
-    // Get video URLs from the API (vidURLs or vid_urls)
-    const videoUrls = Array.isArray(launch.vidURLs) ? launch.vidURLs :
-        Array.isArray(launch.vid_urls) ? launch.vid_urls : [];
+    // Get video URLs from the API (normalized video_urls with legacy fallbacks)
+    const rawVideoUrls = Array.isArray(launch.video_urls) ? launch.video_urls :
+        Array.isArray(launch.vidURLs) ? launch.vidURLs :
+            Array.isArray(launch.vid_urls) ? launch.vid_urls : [];
+    const videoUrls = rawVideoUrls
+        .map((item) => {
+            if (!item) return null;
+            if (typeof item === 'string') {
+                return { url: item, title: 'Launch Stream' };
+            }
+            if (typeof item === 'object' && typeof item.url === 'string') {
+                return item;
+            }
+            return null;
+        })
+        .filter((item) => item?.url && /^https?:\/\//i.test(item.url));
     const hasVideoUrls = videoUrls.length > 0;
     const primaryVideoUrl = hasVideoUrls ? videoUrls[0].url : null;
 
