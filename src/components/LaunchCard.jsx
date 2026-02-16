@@ -105,12 +105,16 @@ function LaunchCard({ launch, launchType }) {
             onClick={handleCardClick}
         >
             {/* Top Header - Provider, Payload & Status */}
-            <div className="absolute h-10 top-0 left-0 right-0 z-10 px-2" >
-                <div className="flex flex-col  gap-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent">
-                    <div className="text-[12px] text-white/900 font-medium uppercase truncate">{providerName}</div>
+            <div className="absolute top-0 left-0 right-0 z-10 px-3 pt-1">
+                <div className="flex flex-col gap-1">
+                    <div className="inline-flex self-start px-2 rounded-sm bg-gradient-to-b from-black/30 to-black/30">
+                        <div className="text-[10px] text-white font-bold uppercase">{providerName}</div>
+                    </div>
                     <div className="flex items-center justify-between gap-2">
-                        <div className="text-lg font-bold text-white truncate flex-1" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
-                            {payloadDisplay}
+                        <div className="inline-flex max-w-[72%] px-1 py-1 rounded-sm bg-gradient-to-b from-black/30 to-black/30">
+                            <div className="text-white font-bold" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
+                                {payloadDisplay}
+                            </div>
                         </div>
                         {launchType === 'upcoming' && (
                             <div className={`px-2 py-1 rounded-sm text-xs font-bold shrink-0 ${isGoStatus ? 'bg-green-600 text-white' : 'bg-yellow-600 text-black'}`}>
