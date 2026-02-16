@@ -3,6 +3,13 @@ import Header from './Header';
 import SearchBar from './SearchBar';
 import LaunchCard from './LaunchCard';
 
+// In-memory cache to avoid refetching on every navigation
+const launchCache = {
+    upcoming: { data: null, timestamp: 0 },
+    previous: { data: null, timestamp: 0 },
+};
+const CACHE_TTL = 60_000; // 1 minute
+
 function LaunchList() {
     const [launches, setLaunches] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,11 +25,23 @@ function LaunchList() {
 
     useEffect(() => {
         const controller = new AbortController();
+        const cached = launchCache[launchType];
+        const cacheAge = Date.now() - cached.timestamp;
+        const isCacheFresh = cached.data && cacheAge < CACHE_TTL;
+
+        // If we have cached data, show it immediately
+        if (cached.data) {
+            setLaunches(cached.data);
+            setLoading(false);
+
+            // If cache is still fresh, skip the fetch entirely
+            if (isCacheFresh) return;
+        }
         
         const fetchData = async () => {
             try {
-                setLoading(true);
-                const endpoint = `/api/launches?type=${launchType}&limit=100`;
+                if (!cached.data) setLoading(true);
+                const endpoint = `/api/launches?type=${launchType}&limit=50`;
                 
                 const response = await fetch(endpoint, { signal: controller.signal });
                 
@@ -40,7 +59,6 @@ function LaunchList() {
                 const now = new Date();
                 const processedLaunches = data.results.filter(launch => {
                     if (launchType === 'upcoming') {
-                        // Move to previous as soon as window closes or launch time passes
                         const windowEnd = launch.window_end ? new Date(launch.window_end) : null;
                         const launchTime = new Date(launch.net);
                         const cutoff = windowEnd && windowEnd > launchTime ? windowEnd : launchTime;
@@ -53,11 +71,14 @@ function LaunchList() {
                     }
                 });
 
+                launchCache[launchType] = { data: processedLaunches, timestamp: Date.now() };
                 setLaunches(processedLaunches);
             } catch (err) {
                 if (err.name !== 'AbortError') {
                     console.error('API Error:', err);
-                    alert(`Sorry, ${err.message}. You may have hit the API rate limit - please wait and try again.`);
+                    if (!cached.data) {
+                        alert(`Sorry, ${err.message}. You may have hit the API rate limit - please wait and try again.`);
+                    }
                 }
             } finally {
                 setLoading(false);
