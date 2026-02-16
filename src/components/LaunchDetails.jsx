@@ -1,36 +1,55 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Countdown from './Countdown';
 
 function LaunchDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [launch, setLaunch] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const location = useLocation();
+
+    const initialLaunch = location.state?.launch;
+    const [launch, setLaunch] = useState(initialLaunch);
+    const [loading, setLoading] = useState(!initialLaunch);
+    const [detailsLoading, setDetailsLoading] = useState(true);
+    const launchRef = useRef(initialLaunch);
+    launchRef.current = launch;
 
     useEffect(() => {
-        fetch(`/api/launch/${id}`)
-            .then(response => {
+        const controller = new AbortController();
+
+        const fetchDetails = async () => {
+            try {
+                const response = await fetch(`/api/launch/${id}`, { signal: controller.signal });
+
                 if (!response.ok) {
-                    return response.json().catch(() => null).then(errorData => {
-                        throw new Error(errorData?.error || errorData?.detail || `API error: ${response.status}`);
-                    });
+                    if (launchRef.current) {
+                        setDetailsLoading(false);
+                        return;
+                    }
+                    const errorData = await response.json().catch(() => null);
+                    throw new Error(errorData?.error || errorData?.detail || `API error: ${response.status}`);
                 }
-                return response.json();
-            })
-            .then(data => {
-                if (data.detail || !data.id) {
-                    throw new Error(data.detail || 'Invalid response from API');
+
+                const data = await response.json();
+
+                if (data.id) {
+                    setLaunch(data);
                 }
-                setLaunch(data);
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                console.error('Detail fetch error:', err);
+                if (!launchRef.current) {
+                    console.error('No launch data available');
+                }
+            } finally {
                 setLoading(false);
-            })
-            .catch(err => {
-                console.error('API Error:', err);
-                alert(`Sorry, ${err.message}. You may have hit the API rate limit - please wait and try again.`);
-                setLoading(false);
-            });
+                setDetailsLoading(false);
+            }
+        };
+
+        fetchDetails();
+        return () => controller.abort();
     }, [id]);
 
     if (loading) {
@@ -49,7 +68,7 @@ function LaunchDetails() {
                 <div className="flex flex-col items-center justify-center py-20">
                     <p className="text-gray-400 mb-4">Mission not found</p>
                     <button 
-                        className="px-6 py-3 bg-[#7f1212] text-white rounded hover:bg-[#9a1515] transition-colors"
+                        className="px-6 py-3 bg-[#1a1a1a] border border-[#333] text-white rounded hover:bg-[#222] transition-colors"
                         onClick={() => navigate('/')}
                     >
                         Back to Launches
@@ -69,6 +88,13 @@ function LaunchDetails() {
                 >
                     Back to Launches
                 </button>
+
+                {detailsLoading && (
+                    <div className="flex items-center gap-2 mb-4 text-gray-500 text-sm">
+                        <div className="w-3 h-3 border-2 border-[#333] border-t-[#7f1212] rounded-full animate-spin"></div>
+                        Loading full details...
+                    </div>
+                )}
 
                 <div className="rounded-md overflow-hidden mb-8">
                     <img
@@ -226,7 +252,7 @@ function LaunchDetails() {
                                             </div>
                                             <div>
                                                 <span className="text-gray-400 block">Status</span>
-                                                <span className="text-white">{stage.launcher?.status || 'N/A'}</span>
+                                                <span className="text-white">{typeof stage.launcher?.status === 'object' ? stage.launcher.status.name : stage.launcher?.status || 'N/A'}</span>
                                             </div>
                                             {stage.landing && (
                                                 <>

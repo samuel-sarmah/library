@@ -7,13 +7,12 @@ function LaunchCard({ launch, launchType }) {
     const [showStreamDropdown, setShowStreamDropdown] = useState(false);
 
     const handleCardClick = () => {
-        navigate(`/launch/${launch.id}`);
+        navigate(`/launch/${launch.id}`, { state: { launch } });
     };
 
 
 
-    const providerLogo = launch.launch_service_provider?.logo?.image_url || launch.launch_service_provider?.logo?.thumbnail_url;
-    const providerName = launch.launch_service_provider?.abbrev || launch.launch_service_provider?.name;
+    const providerName = launch.launch_service_provider?.name;
 
     const payloads = launch.mission?.launches?.[0]?.payloads || [];
     const primaryPayload = launch.mission?.name || payloads[0]?.name || launch.name?.split('|')[1]?.trim() || 'Payload TBD';
@@ -106,26 +105,15 @@ function LaunchCard({ launch, launchType }) {
             onClick={handleCardClick}
         >
             {/* Top Header - Provider, Payload & Status */}
-            <div className="absolute h-10 top-0 left-0 right-0 z-10 " style={{ paddingBottom: '2rem' }}>
-                <div className="flex flex-col  gap-0.5 bg-gradient-to-b from-black/70 via-black/40 to-tansparent">
-                    {providerLogo ? (
-                        <img 
-                            src={providerLogo} 
-                            alt={providerName}
-                            className="h-5 w-auto object-contain self-start"
-                            onError={(e) => {
-                                e.target.style.display = 'none';
-                            }}
-                        />
-                    ) : (
-                        <div className="text-[10px] text-white/200 font-medium uppercase tracking-wide">{providerName}</div>
-                    )}
+            <div className="absolute h-10 top-0 left-0 right-0 z-10 px-2" >
+                <div className="flex flex-col  gap-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent">
+                    <div className="text-[12px] text-white/900 font-medium uppercase truncate">{providerName}</div>
                     <div className="flex items-center justify-between gap-2">
                         <div className="text-lg font-bold text-white truncate flex-1" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
                             {payloadDisplay}
                         </div>
                         {launchType === 'upcoming' && (
-                            <div className={`px-2 py-0.5 rounded-sm text-xs font-bold shrink-0 ${isGoStatus ? 'bg-green-600 text-white' : 'bg-yellow-600 text-black'}`}>
+                            <div className={`px-2 py-1 rounded-sm text-xs font-bold shrink-0 ${isGoStatus ? 'bg-green-600 text-white' : 'bg-yellow-600 text-black'}`}>
                                 {statusText}
                             </div>
                         )}
