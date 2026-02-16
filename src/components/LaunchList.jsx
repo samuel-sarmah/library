@@ -59,13 +59,13 @@ function LaunchList() {
                 const now = new Date();
                 const processedLaunches = data.results.filter(launch => {
                     if (launchType === 'upcoming') {
-                        const windowEnd = launch.window_end ? new Date(launch.window_end) : null;
-                        const launchTime = new Date(launch.net);
+                        const windowEnd = launch.window_close || launch.window_end ? new Date(launch.window_close || launch.window_end) : null;
+                        const launchTime = new Date(launch.liftoff_exact || launch.net);
                         const cutoff = windowEnd && windowEnd > launchTime ? windowEnd : launchTime;
                         return cutoff > now;
                     } else {
-                        const windowEnd = launch.window_end ? new Date(launch.window_end) : null;
-                        const launchTime = new Date(launch.net);
+                        const windowEnd = launch.window_close || launch.window_end ? new Date(launch.window_close || launch.window_end) : null;
+                        const launchTime = new Date(launch.liftoff_exact || launch.net);
                         const cutoff = windowEnd && windowEnd > launchTime ? windowEnd : launchTime;
                         return cutoff <= now;
                     }

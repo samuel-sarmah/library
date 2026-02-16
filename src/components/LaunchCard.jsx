@@ -54,11 +54,15 @@ function LaunchCard({ launch, launchType }) {
     // Calculate launch window slider position
     const getSliderPosition = () => {
         const now = new Date();
-        const windowStart = launch.window_start ? new Date(launch.window_start) : null;
-        const windowEnd = launch.window_end ? new Date(launch.window_end) : null;
-        const liftoff = new Date(launch.net);
+        const windowStartRaw = launch.window_open || launch.window_start;
+        const windowEndRaw = launch.window_close || launch.window_end;
+        const liftoffRaw = launch.liftoff_exact || launch.net;
 
-        if (!windowStart || !windowEnd) return null;
+        const windowStart = windowStartRaw ? new Date(windowStartRaw) : null;
+        const windowEnd = windowEndRaw ? new Date(windowEndRaw) : null;
+        const liftoff = liftoffRaw ? new Date(liftoffRaw) : null;
+
+        if (!windowStart || !windowEnd || !liftoff) return null;
 
         const totalWindow = windowEnd - windowStart;
         if (totalWindow <= 0) return null;
@@ -67,7 +71,7 @@ function LaunchCard({ launch, launchType }) {
         const position = Math.max(0, Math.min(100, (elapsed / totalWindow) * 100));
         const liftoffPosition = Math.max(0, Math.min(100, ((liftoff - windowStart) / totalWindow) * 100));
 
-        // Format times with more detail
+        // Format window boundaries
         const formatTime = (date) => date.toLocaleTimeString('en-US', {
             hour: '2-digit',
             minute: '2-digit',
@@ -164,9 +168,9 @@ function LaunchCard({ launch, launchType }) {
                             />
                         </div>
                         <div className="flex justify-between mt-1 text-[9px] text-white/70">
-                            <span>Open: {sliderData.windowStartTime}</span>
+                            <span>Window open</span>
                             <span className="text-green-400 font-medium">Liftoff: {sliderData.liftoffTime}</span>
-                            <span>Close: {sliderData.windowEndTime}</span>
+                            <span>Close</span>
                         </div>
                     </div>
                 )}
