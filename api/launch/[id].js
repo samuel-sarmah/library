@@ -1,12 +1,6 @@
 export default async function handler(req, res) {
     const { id } = req.query;
 
-    const apiKey = process.env.SPACE_DEVS_API_KEY;
-    if (!apiKey) {
-        console.error('SPACE_DEVS_API_KEY environment variable is not set');
-        return res.status(500).json({ error: 'API key not configured on server' });
-    }
-
     const endpoint = `https://ll.thespacedevs.com/2.3.0/launches/${id}/?mode=detailed`;
 
     try {
@@ -14,7 +8,6 @@ export default async function handler(req, res) {
         const timeout = setTimeout(() => controller.abort(), 8000);
 
         const response = await fetch(endpoint, {
-            headers: { 'Authorization': `Token ${apiKey}` },
             signal: controller.signal,
         });
         clearTimeout(timeout);

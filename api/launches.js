@@ -6,18 +6,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Invalid launch type' });
     }
 
-    const apiKey = process.env.SPACE_DEVS_API_KEY;
-    if (!apiKey) {
-        console.error('SPACE_DEVS_API_KEY environment variable is not set');
-        return res.status(500).json({ error: 'API key not configured on server' });
-    }
-
     const endpoint = `https://ll.thespacedevs.com/2.3.0/launches/${type}/?limit=${effectiveLimit}&mode=detailed`;
 
     try {
-        const response = await fetch(endpoint, {
-            headers: { 'Authorization': `Token ${apiKey}` },
-        });
+        const response = await fetch(endpoint, {});
         const data = await response.json();
 
         const normalizeVideoUrls = (launch) => {
