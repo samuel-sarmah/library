@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
             if (path.startsWith('/api/launches')) {
               const type = url.searchParams.get('type') || 'upcoming';
               const limit = url.searchParams.get('limit') || '100';
-              return `/2.3.0/launches/${type}/?limit=${limit}&mode=detailed`;
+              return `/2.3.0/launches/${type}/?limit=${limit}&mode=normal`;
             }
             // /api/launch/:id → /2.3.0/launches/:id/?mode=detailed
             const match = path.match(/^\/api\/launch\/(.+)/);

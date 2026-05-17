@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
-function SearchBar({ filters, onFilterChange, sortOrder, onSortChange, filterOptions, resultsPerPage, onResultsPerPageChange, launchType, onLaunchTypeChange }) {
+function SearchBar({ searchQuery, onSearchChange, filters, onFilterChange, sortOrder, onSortChange, filterOptions, resultsPerPage, onResultsPerPageChange, launchType, onLaunchTypeChange }) {
     const [filtersVisible, setFiltersVisible] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
 
     return (
         <div className="w-full max-w-7xl mx-auto px-6 py-6 ">
@@ -36,7 +35,7 @@ function SearchBar({ filters, onFilterChange, sortOrder, onSortChange, filterOpt
                         type="text"
                         placeholder="Search..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => onSearchChange(e.target.value)}
                         className="w-full lg:w-64 px-3 py-2 bg-black text-white border border-[#333] rounded text-sm placeholder-gray-500 focus:outline-none focus:border-[#4da6ff]"
                     />
                     
