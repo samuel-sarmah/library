@@ -3,6 +3,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Countdown from './Countdown';
 
+const PLACEHOLDER_IMAGE = '/launch-placeholder.svg';
+
 function LaunchDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -98,9 +100,13 @@ function LaunchDetails() {
 
                 <div className="rounded-md overflow-hidden mb-8">
                     <img
-                        src={launch.image?.image_url || launch.image?.thumbnail_url || 'https://via.placeholder.com/800x400?text=No+Image'}
+                        src={launch.image?.image_url || launch.image?.thumbnail_url || PLACEHOLDER_IMAGE}
                         alt={launch.name}
                         className="w-full h-64 md:h-96 object-cover"
+                        onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = PLACEHOLDER_IMAGE;
+                        }}
                     />
                 </div>
 
