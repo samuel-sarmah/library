@@ -1,12 +1,19 @@
-import { memo, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Countdown from './Countdown';
 
 const PLACEHOLDER_IMAGE = '/launch-placeholder.svg';
 
+const toImageSrc = (url) => {
+    if (!url) return null;
+    if (import.meta.env.DEV) return url;
+    return `/api/image?url=${encodeURIComponent(url)}`;
+};
+
 function LaunchCard({ launch, launchType }) {
     const navigate = useNavigate();
     const [showStreamDropdown, setShowStreamDropdown] = useState(false);
+    const [imageStage, setImageStage] = useState(0);
 
     const handleCardClick = () => {
         navigate(`/launch/${launch.id}`, { state: { launch } });
@@ -95,6 +102,26 @@ function LaunchCard({ launch, launchType }) {
 
     const sliderData = getSliderPosition();
 
+    const primaryImage = toImageSrc(launch.image?.thumbnail_url);
+    const fallbackImage = toImageSrc(launch.image?.image_url);
+
+    useEffect(() => {
+        setImageStage(0);
+    }, [launch.id, primaryImage, fallbackImage]);
+
+    const imageSrc = useMemo(() => {
+        if (imageStage === 0) return primaryImage || fallbackImage || PLACEHOLDER_IMAGE;
+        if (imageStage === 1) return fallbackImage || PLACEHOLDER_IMAGE;
+        return PLACEHOLDER_IMAGE;
+    }, [imageStage, primaryImage, fallbackImage]);
+
+    const imageSrcSet = useMemo(() => {
+        if (primaryImage && fallbackImage && primaryImage !== fallbackImage) {
+            return `${primaryImage} 480w, ${fallbackImage} 1200w`;
+        }
+        return undefined;
+    }, [primaryImage, fallbackImage]);
+
     // Get video URLs from the API (normalized video_urls with legacy fallbacks)
     const rawVideoUrls = Array.isArray(launch.video_urls) ? launch.video_urls :
         Array.isArray(launch.vidURLs) ? launch.vidURLs :
@@ -144,14 +171,20 @@ function LaunchCard({ launch, launchType }) {
             {/* Image Section - full card background */}
             <div className="absolute inset-0">
                 <img
-                    src={launch.image?.image_url || launch.image?.thumbnail_url || PLACEHOLDER_IMAGE}
+                    src={imageSrc}
+                    srcSet={imageSrcSet}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     alt={launch.name}
                     className="w-full h-full object-cover object-top"
                     loading="lazy"
                     decoding="async"
                     onError={(e) => {
+                        if (imageStage === 0 && fallbackImage && fallbackImage !== primaryImage) {
+                            setImageStage(1);
+                            return;
+                        }
+                        setImageStage(2);
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = PLACEHOLDER_IMAGE;
                     }}
                 />
                 
