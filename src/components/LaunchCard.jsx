@@ -1,6 +1,8 @@
-import { useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Countdown from './Countdown';
+
+const PLACEHOLDER_IMAGE = '/launch-placeholder.svg';
 
 function LaunchCard({ launch, launchType }) {
     const navigate = useNavigate();
@@ -9,15 +11,9 @@ function LaunchCard({ launch, launchType }) {
     const handleCardClick = () => {
         navigate(`/launch/${launch.id}`, { state: { launch } });
     };
-
-
-
     const providerName = launch.launch_service_provider?.name;
 
-    const payloads = launch.mission?.launches?.[0]?.payloads || [];
-    const primaryPayload = launch.mission?.name || payloads[0]?.name || launch.name?.split('|')[1]?.trim() || 'Payload TBD';
-    const hasMultiplePayloads = payloads.length > 1;
-    const payloadDisplay = hasMultiplePayloads ? `${primaryPayload} (+${payloads.length - 1})` : primaryPayload;
+    const missionName = launch.mission?.name || launch.name?.split('|')[1]?.trim() || 'Payload TBD';
 
     const isGoStatus = [
         'Go for Launch',
@@ -26,28 +22,31 @@ function LaunchCard({ launch, launchType }) {
     ].some(status => launch.status?.name?.includes(status));
     const statusText = isGoStatus ? 'GO' : 'TBD';
 
-    const launchDateTime = new Date(launch.net);
+    const launchDateTime = useMemo(() => new Date(launch.net), [launch.net]);
+    const { localTimeMain, localTimePeriod, tzAbbr, localDate } = useMemo(() => {
+        const localTimeParts = launchDateTime.toLocaleString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        }).match(/(\d{1,2}:\d{2})\s*(AM|PM)?/i);
 
-    // Use user's local timezone
-    const localTimeParts = launchDateTime.toLocaleString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-    }).match(/(\d{1,2}:\d{2})\s*(AM|PM)?/i);
+        const timezone = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' })
+            .formatToParts(launchDateTime)
+            .find(part => part.type === 'timeZoneName')?.value || '';
 
-    const localTimeMain = localTimeParts ? localTimeParts[1] : '';
-    const localTimePeriod = localTimeParts ? localTimeParts[2] : '';
+        const dateLabel = launchDateTime.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
 
-    // Get user's timezone abbreviation
-    const tzAbbr = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' })
-        .formatToParts(launchDateTime)
-        .find(part => part.type === 'timeZoneName')?.value || '';
-
-    const localDate = launchDateTime.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-    });
+        return {
+            localTimeMain: localTimeParts ? localTimeParts[1] : '',
+            localTimePeriod: localTimeParts ? localTimeParts[2] : '',
+            tzAbbr: timezone,
+            localDate: dateLabel
+        };
+    }, [launchDateTime]);
 
 
 
@@ -128,9 +127,9 @@ function LaunchCard({ launch, launchType }) {
                         <div className="text-[10px] text-white font-bold uppercase">{providerName}</div>
                     </div>
                     <div className="flex items-center justify-between gap-2">
-                        <div className="inline-flex max-w-[72%] px-1 py-1 rounded-sm bg-gradient-to-b from-black/30 to-black/30">
-                            <div className="text-white font-bold" title={hasMultiplePayloads ? `${payloads.length} payloads` : payloadDisplay}>
-                                {payloadDisplay}
+                            <div className="inline-flex max-w-[72%] px-1 py-1 rounded-sm bg-gradient-to-b from-black/30 to-black/30">
+                            <div className="text-white font-bold" title={missionName}>
+                                {missionName}
                             </div>
                         </div>
                         {launchType === 'upcoming' && (
@@ -145,9 +144,15 @@ function LaunchCard({ launch, launchType }) {
             {/* Image Section - full card background */}
             <div className="absolute inset-0">
                 <img
-                    src={launch.image?.image_url || launch.image?.thumbnail_url || 'https://via.placeholder.com/400x300?text=No+Image'}
+                    src={launch.image?.image_url || launch.image?.thumbnail_url || PLACEHOLDER_IMAGE}
                     alt={launch.name}
                     className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                    onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = PLACEHOLDER_IMAGE;
+                    }}
                 />
                 
             </div>
@@ -239,4 +244,4 @@ function LaunchCard({ launch, launchType }) {
     );
  }
 
-export default LaunchCard;
+export default memo(LaunchCard);
