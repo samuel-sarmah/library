@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import LaunchList from './components/LaunchList'
-import LaunchDetails from './components/LaunchDetails'
+
+const LaunchDetails = lazy(() => import('./components/LaunchDetails'));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -17,10 +18,19 @@ function App() {
   return (
     <Router>
       <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<LaunchList />} />
-        <Route path="/launch/:id" element={<LaunchDetails />} />
-      </Routes>
+      <Suspense
+        fallback={(
+          <div className="flex flex-col items-center justify-center min-h-screen bg-black">
+            <div className="w-12 h-12 border-4 border-[#333] border-t-[#7f1212] rounded-full animate-spin"></div>
+            <p className="mt-4 text-gray-400">Loading...</p>
+          </div>
+        )}
+      >
+        <Routes>
+          <Route path="/" element={<LaunchList />} />
+          <Route path="/launch/:id" element={<LaunchDetails />} />
+        </Routes>
+      </Suspense>
     </Router>
   )
 }
