@@ -5,6 +5,12 @@ import Countdown from './Countdown';
 
 const PLACEHOLDER_IMAGE = '/launch-placeholder.svg';
 
+const toImageSrc = (url) => {
+    if (!url) return null;
+    if (import.meta.env.DEV) return url;
+    return `/api/image?url=${encodeURIComponent(url)}`;
+};
+
 function LaunchDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -16,6 +22,8 @@ function LaunchDetails() {
     const [detailsLoading, setDetailsLoading] = useState(true);
     const launchRef = useRef(initialLaunch);
     launchRef.current = launch;
+
+    const detailImage = toImageSrc(launch?.image?.image_url || launch?.image?.thumbnail_url);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -100,7 +108,7 @@ function LaunchDetails() {
 
                 <div className="rounded-md overflow-hidden mb-8">
                     <img
-                        src={launch.image?.image_url || launch.image?.thumbnail_url || PLACEHOLDER_IMAGE}
+                        src={detailImage || PLACEHOLDER_IMAGE}
                         alt={launch.name}
                         className="w-full h-64 md:h-96 object-cover"
                         onError={(e) => {
