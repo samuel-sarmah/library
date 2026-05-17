@@ -9,6 +9,7 @@ const launchCache = {
     previous: { data: null, timestamp: 0 },
 };
 const CACHE_TTL = 60_000; // 1 minute
+const LIST_LIMIT = 30;
 
 function LaunchList() {
     const [launches, setLaunches] = useState([]);
@@ -22,6 +23,7 @@ function LaunchList() {
     const [currentPage, setCurrentPage] = useState(1);
     const [resultsPerPage, setResultsPerPage] = useState(15);
     const [launchType, setLaunchType] = useState('upcoming');
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         const controller = new AbortController();
@@ -41,9 +43,9 @@ function LaunchList() {
         const fetchData = async () => {
             try {
                 if (!cached.data) setLoading(true);
-                const endpoint = `/api/launches?type=${launchType}&limit=50`;
+                const endpoint = `/api/launches?type=${launchType}&limit=${LIST_LIMIT}`;
                 
-                const response = await fetch(endpoint, { signal: controller.signal });
+                const response = await fetch(endpoint, { signal: controller.signal, cache: 'force-cache' });
                 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => null);
@@ -92,6 +94,52 @@ function LaunchList() {
         };
     }, [launchType]);
 
+    useEffect(() => {
+        const oppositeType = launchType === 'upcoming' ? 'previous' : 'upcoming';
+        const cached = launchCache[oppositeType];
+        if (cached.data && Date.now() - cached.timestamp < CACHE_TTL) {
+            return;
+        }
+
+        const controller = new AbortController();
+        const idlePrefetch = () => {
+            fetch(`/api/launches?type=${oppositeType}&limit=${LIST_LIMIT}`, {
+                signal: controller.signal,
+                cache: 'force-cache'
+            })
+                .then((response) => (response.ok ? response.json() : null))
+                .then((data) => {
+                    if (!data?.results) return;
+                    const now = new Date();
+                    const processedLaunches = data.results.filter(launch => {
+                        const windowEnd = launch.window_close || launch.window_end ? new Date(launch.window_close || launch.window_end) : null;
+                        const launchTime = new Date(launch.liftoff_exact || launch.net);
+                        const cutoff = windowEnd && windowEnd > launchTime ? windowEnd : launchTime;
+                        return oppositeType === 'upcoming' ? cutoff > now : cutoff <= now;
+                    });
+
+                    launchCache[oppositeType] = { data: processedLaunches, timestamp: Date.now() };
+                })
+                .catch(() => {
+                    // Best-effort prefetch only.
+                });
+        };
+
+        if ('requestIdleCallback' in window) {
+            const id = window.requestIdleCallback(idlePrefetch, { timeout: 1200 });
+            return () => {
+                window.cancelIdleCallback(id);
+                controller.abort();
+            };
+        }
+
+        const timeoutId = setTimeout(idlePrefetch, 500);
+        return () => {
+            clearTimeout(timeoutId);
+            controller.abort();
+        };
+    }, [launchType]);
+
     const filterOptions = useMemo(() => {
         const providers = [...new Set(launches.map(l => l.launch_service_provider?.name).filter(Boolean))].sort();
         const rockets = [...new Set(launches.map(l => l.rocket?.configuration?.name).filter(Boolean))].sort();
@@ -101,6 +149,17 @@ function LaunchList() {
 
     const filteredAndSortedLaunches = useMemo(() => {
         let filtered = launches;
+
+        if (searchQuery) {
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter(launch =>
+                launch.name?.toLowerCase().includes(query) ||
+                launch.launch_service_provider?.name?.toLowerCase().includes(query) ||
+                launch.rocket?.configuration?.name?.toLowerCase().includes(query) ||
+                launch.pad?.location?.name?.toLowerCase().includes(query) ||
+                launch.mission?.name?.toLowerCase().includes(query)
+            );
+        }
 
         if (filters.provider) {
             filtered = filtered.filter(launch => 
@@ -130,13 +189,18 @@ function LaunchList() {
         });
 
         return sorted;
-    }, [launches, filters, sortOrder, launchType]);
+    }, [launches, filters, sortOrder, launchType, searchQuery]);
 
     const totalPages = Math.ceil(filteredAndSortedLaunches.length / resultsPerPage);
     const paginatedLaunches = filteredAndSortedLaunches.slice(
         (currentPage - 1) * resultsPerPage,
         currentPage * resultsPerPage
     );
+
+    const handleSearchChange = (query) => {
+        setSearchQuery(query);
+        setCurrentPage(1);
+    };
 
     const handleFilterChange = (filterType, value) => {
         setFilters(prev => ({ ...prev, [filterType]: value }));
@@ -179,6 +243,8 @@ function LaunchList() {
                 </h1>
 
                 <SearchBar
+                    searchQuery={searchQuery}
+                    onSearchChange={handleSearchChange}
                     filters={filters}
                     onFilterChange={handleFilterChange}
                     sortOrder={sortOrder}
