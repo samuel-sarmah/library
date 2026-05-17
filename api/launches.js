@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Invalid launch type' });
     }
 
-    const endpoint = `https://ll.thespacedevs.com/2.3.0/launches/${type}/?limit=${effectiveLimit}&mode=detailed`;
+    const endpoint = `https://ll.thespacedevs.com/2.3.0/launches/${type}/?limit=${effectiveLimit}&mode=normal`;
 
     try {
         const response = await fetch(endpoint, {});
