@@ -1,0 +1,18 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Mission Image Placeholder</title>
+  <desc id="desc">Decorative fallback image for launches without available photos.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="675" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#090909"/>
+      <stop offset="1" stop-color="#171717"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="444" y1="195" x2="756" y2="507" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#A92A2A"/>
+      <stop offset="1" stop-color="#5C0E0E"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <circle cx="600" cy="318" r="124" stroke="url(#ring)" stroke-width="10" opacity="0.92"/>
+  <path d="M600 250L626 316H695L640 354L660 414L600 380L540 414L560 354L505 316H574L600 250Z" fill="#E5E5E5" opacity="0.9"/>
+</svg>
