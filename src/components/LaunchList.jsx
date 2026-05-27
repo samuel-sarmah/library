@@ -276,7 +276,7 @@ function LaunchList() {
                 <NewsHighlight />
 
                 <h1 className="text-xl md:text-2xl font-bold text-white text-center mb-5 px-6">
-                    {launchType === 'upcoming' ? 'All Upcoming Launches' : 'Previous Space Launches'}
+                    {launchType === 'upcoming' ? 'Upcoming Launches' : 'Previous Space Launches'}
                 </h1>
 
                 <SearchBar
