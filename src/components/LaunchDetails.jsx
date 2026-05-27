@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Countdown from './Countdown';
+import { useWatchlist } from '../hooks/useWatchlist';
+import { useNotifications } from '../hooks/useNotifications';
 
 const PLACEHOLDER_IMAGE = '/launch-placeholder.svg';
 
@@ -20,8 +22,12 @@ function LaunchDetails() {
     const [launch, setLaunch] = useState(initialLaunch);
     const [loading, setLoading] = useState(!initialLaunch);
     const [detailsLoading, setDetailsLoading] = useState(true);
+    const [relatedArticles, setRelatedArticles] = useState([]);
     const launchRef = useRef(initialLaunch);
     launchRef.current = launch;
+
+    const { isWatched, toggle: toggleWatch } = useWatchlist();
+    const { isSubscribed, toggle: toggleNotif } = useNotifications();
 
     const detailImage = toImageSrc(launch?.image?.image_url || launch?.image?.thumbnail_url);
 
@@ -62,9 +68,27 @@ function LaunchDetails() {
         return () => controller.abort();
     }, [id]);
 
+    useEffect(() => {
+        const controller = new AbortController();
+        const fetchRelated = async () => {
+            try {
+                let r = await fetch(`/api/news?launch=${id}&limit=5`, { signal: controller.signal });
+                if (!r.ok) {
+                    r = await fetch(`https://api.spaceflightnewsapi.net/v4/articles/?launch=${id}&limit=5`, { signal: controller.signal });
+                }
+                if (r.ok) {
+                    const data = await r.json();
+                    if (data?.results) setRelatedArticles(data.results);
+                }
+            } catch { /* best-effort */ }
+        };
+        fetchRelated();
+        return () => controller.abort();
+    }, [id]);
+
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-black">
+            <div className="flex flex-col items-center justify-center min-h-screen">
                 <div className="w-12 h-12 border-4 border-[#333] border-t-[#7f1212] rounded-full animate-spin"></div>
                 <p className="mt-4 text-gray-400">Loading mission details....</p>
             </div>
@@ -73,7 +97,7 @@ function LaunchDetails() {
 
     if (!launch) {
         return (
-            <div className="min-h-screen bg-black">
+            <div className="min-h-screen">
                 <Header />
                 <div className="flex flex-col items-center justify-center py-20">
                     <p className="text-gray-400 mb-4">Mission not found</p>
@@ -91,13 +115,57 @@ function LaunchDetails() {
     return (
         <>
             <Header />
-            <div className="min-h-screen bg-black px-4 py-8 max-w-4xl mx-auto">
-                <button 
-                    className="mb-6 px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded text-white hover:bg-[#222] transition-colors"
-                    onClick={() => navigate('/')}
-                >
-                    Back to Launches
-                </button>
+            <div className="min-h-screen px-4 py-8 max-w-4xl mx-auto">
+                <div className="mb-6 flex flex-wrap items-center gap-3">
+                    <button
+                        className="px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded text-white hover:bg-[#222] transition-colors"
+                        onClick={() => navigate('/')}
+                    >
+                        Back to Launches
+                    </button>
+                    <button
+                        className="flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded text-white hover:bg-[#222] transition-colors"
+                        onClick={() => toggleWatch(launch.id)}
+                    >
+                        {isWatched(launch.id) ? (
+                            <>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-[#4da6ff]">
+                                    <path d="M10 .75a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.75.75 0 0 1-1.088.791L10 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L2.818 6.874a.75.75 0 0 1 .416-1.28l4.21-.611L9.327 1.168A.75.75 0 0 1 10 .75Z" />
+                                </svg>
+                                <span className="text-[#4da6ff] text-sm">Watchlisted</span>
+                            </>
+                        ) : (
+                            <>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                                </svg>
+                                <span className="text-sm">Add to Watchlist</span>
+                            </>
+                        )}
+                    </button>
+                    {new Date(launch.net) > new Date() && (
+                        <button
+                            className="flex items-center gap-2 px-4 py-2 bg-[#1a1a1a] border border-[#333] rounded text-white hover:bg-[#222] transition-colors"
+                            onClick={() => toggleNotif(launch.id, launch)}
+                        >
+                            {isSubscribed(launch.id) ? (
+                                <>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-yellow-400">
+                                        <path d="M4.214 3.227a.75.75 0 0 0-1.156-.956 8.97 8.97 0 0 0-1.856 3.826.75.75 0 0 0 1.466.316 7.47 7.47 0 0 1 1.546-3.186ZM16.942 2.271a.75.75 0 0 0-1.157.956 7.47 7.47 0 0 1 1.547 3.186.75.75 0 0 0 1.466-.316 8.971 8.971 0 0 0-1.856-3.826ZM10 2a6 6 0 0 0-6 6v1.077a4.5 4.5 0 0 1-.333 1.686l-.823 2.056a1.5 1.5 0 0 0 1.388 2.062h11.536a1.5 1.5 0 0 0 1.388-2.062l-.823-2.056A4.5 4.5 0 0 1 16 9.077V8a6 6 0 0 0-6-6Zm0 18a2.5 2.5 0 0 1-2.278-1.463.75.75 0 0 1 1.362-.635A1 1 0 0 0 10 18.5a1 1 0 0 0 .916-.598.75.75 0 0 1 1.362.635A2.5 2.5 0 0 1 10 20Z" />
+                                    </svg>
+                                    <span className="text-yellow-400 text-sm">Alerts On</span>
+                                </>
+                            ) : (
+                                <>
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+                                    </svg>
+                                    <span className="text-sm">Notify Me</span>
+                                </>
+                            )}
+                        </button>
+                    )}
+                </div>
 
                 {detailsLoading && (
                     <div className="flex items-center gap-2 mb-4 text-gray-500 text-sm">
@@ -300,6 +368,38 @@ function LaunchDetails() {
                                         className="px-6 py-3 bg-[#7f1212] text-white rounded hover:bg-[#9a1515] transition-colors font-medium"
                                     >
                                         ▶ Watch Live
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {relatedArticles.length > 0 && (
+                        <div className="bg-[#0d0d0d] rounded-md border border-[#1a1a1a] p-6">
+                            <h2 className="text-xl font-semibold text-white mb-4">Related Articles</h2>
+                            <div className="space-y-3">
+                                {relatedArticles.map((article) => (
+                                    <a
+                                        key={article.id}
+                                        href={article.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex gap-3 p-3 bg-[#1a1a1a] rounded border border-[#222] hover:border-[#444] transition-colors group"
+                                    >
+                                        {article.image_url && (
+                                            <img
+                                                src={article.image_url}
+                                                alt=""
+                                                className="w-16 h-16 object-cover rounded shrink-0"
+                                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                            />
+                                        )}
+                                        <div className="min-w-0">
+                                            <p className="text-white text-sm font-medium group-hover:text-[#4da6ff] transition-colors line-clamp-2">{article.title}</p>
+                                            <p className="text-gray-500 text-xs mt-1">
+                                                {article.news_site} · {new Date(article.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                            </p>
+                                        </div>
                                     </a>
                                 ))}
                             </div>
