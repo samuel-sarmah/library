@@ -4,9 +4,18 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0" />
-    <title>library</title>
+    <title>LaunchTracker</title>
+    <meta name="description" content="Track upcoming and past space launches in real time — powered by The Space Devs API." />
+    <meta property="og:title" content="LaunchTracker" />
+    <meta property="og:description" content="Track upcoming and past space launches in real time — powered by The Space Devs API." />
+    <meta property="og:image" content="https://launchtracker.vercel.app/spacex-OHOU-5UVIYQ-unsplash.jpg" />
+    <meta property="og:type" content="website" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="preconnect" href="https://ll.thespacedevs.com" />
+    <link rel="preconnect" href="https://api.spaceflightnewsapi.net" />
   </head>
   <body>
+    <canvas id="starfield" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;display:block;"></canvas>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
